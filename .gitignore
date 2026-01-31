@@ -10,5 +10,5 @@ data
 .DS_Store
 *.swp
 
-lua/config/secrets.lua
-lazy-lock.json
+nvim/lua/config/secrets.lua
+nvim/lazy-lock.json
