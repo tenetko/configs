@@ -1,0 +1,62 @@
+[colors.bright]
+black = "0x606060"
+blue = "0x3465a4"
+cyan = "0x46a4ff"
+green = "0xc8e7a8"
+magenta = "0xf57900"
+red = "0xff8d8d"
+white = "0xffffff"
+yellow = "0xffc123"
+
+[colors.normal]
+black = "0x202020"
+blue = "0x204a87"
+cyan = "0x89b6e2"
+green = "0x93d44f"
+magenta = "0xce5c00"
+red = "0xff6565"
+white = "0xcccccc"
+yellow = "0xeab93d"
+
+[colors.primary]
+background = "0x000000"
+foreground = "0xaaaaaa"
+
+[font]
+size = 16.0
+
+[font.bold]
+family = "Hack Nerd Font"
+style = "Bold"
+
+[font.bold_italic]
+family = "monospace"
+style = "Bold Italic"
+
+[font.italic]
+family = "Hack Nerd Font"
+style = "Italic"
+
+[font.normal]
+family = "Hack Nerd Font"
+style = "Regular"
+
+[[keyboard.bindings]]
+chars = "\u001B[1;2Q"
+key = "F4"
+mods = "Shift"
+
+[[keyboard.bindings]]
+chars = "\u001B"
+key = 58
+mods = "None"
+
+[[keyboard.bindings]]
+key = "С"
+mods = "Control|Shift"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "М"
+mods = "Control|Shift"
+action = "Paste"

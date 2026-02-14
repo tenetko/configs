@@ -1,0 +1,94 @@
+/* Define your Polybar colors as CSS variables */
+@define-color background #282A2E;
+@define-color background-alt #373B41;
+@define-color foreground #C5C8C6;
+@define-color primary #F0C674;
+@define-color cpu #167A0F;
+@define-color ram #8C47CC;
+@define-color volume #FEFFB8;
+@define-color time #FFFFFF;
+@define-color secondary #8ABEB7;
+@define-color alert #A54242;
+@define-color disabled #707880;
+@define-color wifi #47B1CC;
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Hack", "Font Awesome 6 Free", "Font Awesome 6 Brands", "Material Design Icons", "Weather Icons";
+    font-size: 16px; 
+    min-height: 16px;
+}
+
+window#waybar {
+    background-color: @background;
+    color: @foreground;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+/* Add padding between modules */
+.modules-right > * {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.modules-left > * {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+/* --- MODULE STYLING --- */
+
+#workspaces button {
+    padding: 0 5px;
+    background-color: transparent;
+    color: @foreground;
+}
+
+#workspaces button.focused {
+    background-color: @background-alt;
+    color: @primary;
+    border-bottom: 3px solid @primary; /* Simulating underline */
+}
+
+#workspaces button.urgent {
+    background-color: @alert;
+}
+
+#clock {
+    color: @time;
+}
+
+#battery {
+    color: @foreground; 
+}
+
+#battery.charging, #battery.plugged {
+    color: @primary;
+}
+
+#cpu {
+    color: @cpu;
+}
+
+#memory {
+    color: @ram;
+}
+
+#pulseaudio {
+    color: @volume;
+}
+
+#network.wifi {
+    color: @wifi;
+}
+
+#network.disconnected {
+    color: @alert;
+}
+
+/* Custom Scripts */
+#custom-iqair, #custom-openweathermap {
+    color: @foreground;
+}
