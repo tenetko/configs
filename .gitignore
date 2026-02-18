@@ -12,3 +12,5 @@ data
 
 nvim/lua/config/secrets.lua
 nvim/lazy-lock.json
+
+.env
