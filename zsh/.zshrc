@@ -11,7 +11,22 @@ setopt SHARE_HISTORY
 # -- Options
 setopt autocd extendedglob nomatch notify
 unsetopt beep
-bindkey -v
+source ~/.local/share/zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+
+# -- Starship Vi Mode
+function zvm_after_select_vi_mode() {
+  case $ZVM_MODE in
+    $ZVM_MODE_NORMAL)
+      ;;
+    $ZVM_MODE_INSERT)
+      ;;
+    $ZVM_MODE_VISUAL)
+      ;;
+    $ZVM_MODE_VISUAL_LINE)
+      ;;
+  esac
+  zle reset-prompt
+}
 
 # -- Completion
 zstyle :compinstall filename "$HOME/.zshrc"
