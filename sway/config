@@ -65,6 +65,7 @@ bindsym --to-code $mod+space focus mode_toggle
 bindsym --to-code $mod+a focus parent
 bindsym --to-code $mod+Shift+minus move scratchpad
 bindsym --to-code $mod+minus scratchpad show
+bindsym --to-code $mod+c exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
 
 mode "resize" {
     bindsym $left resize shrink width 10px
@@ -138,13 +139,17 @@ exec gammastep -m wayland -l 55.81:37.72 -t 6800:3500 -g 1.1:0.9:1.1
 exec_always fcitx5 -d --replace
 exec sleep 3 && megasync
 exec dunst
+
 exec swayidle -w \
 timeout 300 '$screenlock' \
 timeout 600 'swaymsg "output * power off"' \
 resume 'swaymsg "output * power on"' \
 before-sleep '$screenlock'
+
 exec_always ~/.config/sway/set_wallpaper.sh
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
 
 include /etc/sway/config.d/*
 exec_always "systemctl --user import-environment WAITING_FOR_WAYLAND_DISPLAY"
