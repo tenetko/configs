@@ -1,0 +1,179 @@
+---
+- name: install custom software
+  hosts: new_installation
+  become: yes
+
+  tasks:
+    - name: add Chrome repository
+      ansible.builtin.yum_repository:
+        name: google-chrome
+        description: google-chrome
+        baseurl: "https://dl.google.com/linux/chrome/rpm/stable/x86_64"
+        gpgkey: "https://dl.google.com/linux/linux_signing_key.pub"
+        gpgcheck: yes
+        enabled: yes
+        mode: "0644"
+        state: present
+
+    - name: install Google Chrome
+      ansible.builtin.dnf5:
+        name: google-chrome-stable
+        state: present
+
+    - name: add Megasync repository
+      ansible.builtin.yum_repository:
+        name: MEGAsync
+        description: MEGAsync
+        file: megasync
+        baseurl: "https://mega.nz/linux/repo/Fedora_$releasever/"
+        gpgkey: "https://mega.nz/linux/repo/Fedora_$releasever/repodata/repomd.xml.key"
+        gpgcheck: yes
+        enabled: yes
+        mode: "0644"
+        state: present
+
+    - name: install Megasync
+      ansible.builtin.dnf5:
+        name: megasync
+        state: present
+
+    - name: add Slack repository
+      ansible.builtin.yum_repository:
+        name: slack
+        description: slack
+        baseurl: "https://packagecloud.io/slacktechnologies/slack/fedora/21/x86_64"
+        gpgkey: "https://packagecloud.io/slacktechnologies/slack/gpgkey"
+        enabled: yes
+        gpgcheck: no
+        repo_gpgcheck: no
+        sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+        state: present
+
+    - name: install Slack
+      ansible.builtin.dnf5:
+        name: slack
+        state: present
+
+    - name: install Zoom
+      ansible.builtin.dnf5:
+        name: https://cdn.zoom.us/prod/6.7.5.6891/zoom_x86_64.rpm
+        state: present
+        disable_gpg_check: yes
+
+    - name: check if keyd is installed
+      ansible.builtin.stat:
+        path: /usr/local/bin/keyd
+      register: keyd
+
+    - name: clone keyd repository
+      ansible.builtin.git:
+        repo: "https://github.com/rvaiya/keyd"
+        dest: /tmp/keyd
+        version: "v{{keyd_version}}"
+        force: yes
+      when: not keyd.stat.exists
+
+    - name: build and install keyd
+      ansible.builtin.shell:
+        cmd: "make && make install"
+        chdir: /tmp/keyd
+        creates: /usr/local/bin/keyd
+      when: not keyd.stat.exists
+
+    - name: enable keyd service
+      ansible.builtin.service:
+        name: keyd
+        enabled: yes
+        state: started
+      when: not keyd.stat.exists
+
+    - name: remove keyd source code
+      ansible.builtin.file:
+        path: /tmp/keyd
+        state: absent
+      when: not keyd.stat.exists
+      become: yes
+
+    - name: swap ffmpeg-free for full ffmpeg
+      ansible.builtin.dnf5:
+        name: ffmpeg
+        state: present
+        allowerasing: yes
+
+    - name: check if cliphist is installed
+      ansible.builtin.stat:
+        path: /usr/local/bin/cliphist
+      register: cliphist
+
+    - name: install cliphist
+      block:
+        - name: get latest cliphist version
+          ansible.builtin.uri:
+            url: https://api.github.com/repos/sentriz/cliphist/releases/latest
+            return_content: true
+          register: cliphist_in_github
+
+        - name: install cliphist binary
+          ansible.builtin.get_url:
+            url: "https://github.com/sentriz/cliphist/releases/download/{{ cliphist_in_github.json.tag_name }}/{{ cliphist_in_github.json.tag_name }}-linux-amd64"
+            dest: /usr/local/bin/cliphist
+            mode: "0755"
+            owner: root
+            group: root
+      when: not cliphist.stat.exists
+
+    - name: install Stig
+      community.general.pipx:
+        name: stig
+      become: no
+
+    - name: check if Starship is installed
+      ansible.builtin.stat:
+        path: /usr/local/bin/starship
+      register: starship
+
+    - name: install Starship
+      ansible.builtin.shell:
+        cmd: |
+          curl -sS https://starship.rs/install.sh | sh -s -- -y
+      when: not starship.stat.exists
+
+    - name: install zsh-vi-mode plugin
+      ansible.builtin.git:
+        repo: https://github.com/jeffreytse/zsh-vi-mode
+        dest: "/home/{{ ansible_user }}/.local/share/zsh/zsh-vi-mode"
+        version: master
+      become: no
+
+    - name: check if Sugar Candy theme is installed
+      ansible.builtin.stat:
+        path: /usr/share/sddm/themes/sugar-candy
+      register: sugar_candy
+
+    - name: install Sugar Candy theme
+      block:
+        - name: download and unzip Sugar Candy
+          ansible.builtin.unarchive:
+            src: https://github.com/Kangie/sddm-sugar-candy/archive/master.zip
+            dest: /usr/share/sddm/themes/
+            remote_src: yes
+            creates: /usr/share/sddm/themes/sddm-sugar-candy-master
+
+        - name: rename Sugar Candy theme directory
+          ansible.builtin.command:
+            cmd: mv /usr/share/sddm/themes/sddm-sugar-candy-master /usr/share/sddm/themes/sugar-candy
+            creates: /usr/share/sddm/themes/sugar-candy
+
+      when: not sugar_candy.stat.exists
+
+    - name: check if Catppuccin theme is installed
+      ansible.builtin.stat:
+        path: /usr/share/sddm/themes/catppuccin-mocha
+      register: catppuccin
+
+    - name: download Catppuccin SDDM
+      ansible.builtin.unarchive:
+        src: https://github.com/catppuccin/sddm/releases/download/v1.0.0/catppuccin-mocha.zip
+        dest: /usr/share/sddm/themes
+        remote_src: yes
+      when: not catppuccin.stat.exists

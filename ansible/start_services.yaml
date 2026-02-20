@@ -1,0 +1,29 @@
+---
+- name: start services
+  hosts: new_installation
+  become: yes
+
+  tasks:
+    - name: enable and start ACPI daemon
+      ansible.builtin.service:
+        name: acpid
+        state: started
+        enabled: yes
+
+    - name: enable and start cron daemon
+      ansible.builtin.service:
+        name: crond
+        state: started
+        enabled: yes
+
+    - name: enable and start sddm daemon
+      ansible.builtin.service:
+        name: sddm
+        state: started
+        enabled: yes
+
+    - name: enable and start transmission daemon
+      ansible.builtin.service:
+        name: transmission-daemon
+        state: started
+        enabled: yes

@@ -1,0 +1,8 @@
+---
+- ansible.builtin.import_playbook: install_standard_software.yaml
+- ansible.builtin.import_playbook: install_custom_software.yaml
+- ansible.builtin.import_playbook: install_fonts.yaml
+- ansible.builtin.import_playbook: install_development_tools.yaml
+- ansible.builtin.import_playbook: install_xray.yaml
+- ansible.builtin.import_playbook: apply_configuration.yaml
+- ansible.builtin.import_playbook: start_services.yaml

@@ -1,0 +1,105 @@
+---
+- name: install fonts
+  hosts: new_installation
+  become: yes
+
+  vars:
+    fonts:
+      - dejavu-sans-mono-fonts
+      - dejavu-serif-fonts
+      - fontawesome-fonts-all
+      - google-noto-emoji-color-fonts
+      - google-noto-emoji-fonts
+      - google-noto-sans-cjk-hk-fonts
+      - google-noto-sans-fonts
+      - google-noto-sans-mono-cjk-sc-fonts
+      - google-noto-sans-mono-cjk-tc-fonts
+      - google-noto-sans-sc-fonts
+      - google-noto-sans-tc-fonts
+      - google-noto-serif-fonts
+      - google-noto-serif-sc-fonts
+      - google-noto-serif-tc-fonts
+      - google-roboto-fonts
+      - google-roboto-mono-fonts
+      - material-icons-fonts
+      - open-sans-fonts
+      - pt-sans-fonts
+
+  tasks:
+    - name: install fonts
+      ansible.builtin.dnf5:
+        name: "{{ fonts }}"
+        state: present
+      notify: refresh font cache
+
+    - name: ensure a directory for Material Design Webfont exists
+      ansible.builtin.file:
+        path: /usr/share/fonts/materialdesign-webfont
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: download Material Design Webfont
+      ansible.builtin.get_url:
+        url: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
+        dest: /usr/share/fonts/materialdesign-webfont/materialdesignicons-webfont.ttf
+        mode: "0644"
+      notify: refresh font cache
+
+    - name: get latest Nerd Fonts release data
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest
+        return_content: true
+      register: gh_latest_nerd_font
+
+    - name: check if Hack Nerd Font is installed
+      ansible.builtin.stat:
+        path: /usr/share/fonts/hack-nerd-fonts/HackNerdFont-Regular.ttf
+      register: hack_nerd_font_regular
+
+    - name: install Hack Nerd Fonts
+      block:
+        - name: create temporary directory for fonts
+          ansible.builtin.tempfile:
+            state: directory
+            suffix: _hack_nerd
+          register: temp_font_dir
+
+        - name: unarchive Hack Nerd Fonts to temp
+          ansible.builtin.unarchive:
+            src: "https://github.com/ryanoasis/nerd-fonts/releases/download/{{ gh_latest_nerd_font.json.tag_name }}/Hack.tar.xz"
+            dest: "{{ temp_font_dir.path }}"
+            remote_src: yes
+
+        - name: ensure a directory for Hack Nerd Fonts exists
+          ansible.builtin.file:
+            path: /usr/share/fonts/hack-nerd-fonts
+            state: directory
+            owner: root
+            group: root
+            mode: "0755"
+
+        - name: install specific Hack Nerd Font files
+          ansible.builtin.copy:
+            src: "{{ temp_font_dir.path }}/{{ item }}"
+            dest: /usr/share/fonts/hack-nerd-fonts/{{ item }}
+            remote_src: yes
+            mode: "0644"
+          loop:
+            - HackNerdFont-BoldItalic.ttf
+            - HackNerdFont-Bold.ttf
+            - HackNerdFont-Italic.ttf
+            - HackNerdFont-Regular.ttf
+          notify: refresh font cache
+
+        - name: remove temporary directory
+          ansible.builtin.file:
+            path: "{{ temp_font_dir.path }}"
+            state: absent
+
+      when: not hack_nerd_font_regular.stat.exists
+
+  handlers:
+    - name: refresh font cache
+      ansible.builtin.command: fc-cache -fv

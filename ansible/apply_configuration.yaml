@@ -1,0 +1,106 @@
+---
+- name: apply configuration
+  hosts: new_installation
+
+  tasks:
+    - name: create /etc/environment for Fcitx5
+      ansible.builtin.copy:
+        dest: /etc/environment
+        mode: "0644"
+        content: |
+          GTK_IM_MODULE=fcitx
+          QT_IM_MODULE=fcitx
+          XMODIFIERS=@im=fcitx
+          SDL_IM_MODULE=fcitx
+      become: yes
+
+    - name: check if ~/configs directory exists
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user }}/configs"
+      register: configs_directory
+
+    - name: clone configs repository
+      ansible.builtin.git:
+        repo: "https://github.com/tenetko/configs"
+        dest: "/home/{{ ansible_user }}/configs"
+      when: not configs_directory.stat.exists
+
+    - name: create a link to Alacritty config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/alacritty"
+        dest: "/home/{{ ansible_user }}/.config/alacritty"
+        state: link
+
+    - name: create a link to bar modules
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/bar-modules"
+        dest: "/home/{{ ansible_user }}/.config/bar-modules"
+        state: link
+
+    - name: create a link to Dunst config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/dunst"
+        dest: "/home/{{ ansible_user }}/.config/dunst"
+        state: link
+
+    - name: check if /etc/keyd exists
+      ansible.builtin.stat:
+        path: /etc/keyd
+      register: keyd
+
+    - name: delete /etc/keyd only if it is a directory and not a symlink
+      ansible.builtin.file:
+        path: /etc/keyd
+        state: absent
+      become: yes
+      when: keyd.stat.isdir is defined and keyd.stat.isdir
+
+    - name: create a link to Keyd config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/keyd"
+        dest: /etc/keyd
+        owner: root
+        group: root
+        state: link
+      become: yes
+
+    - name: create a link to Neovim + Lazyvim configs
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/nvim"
+        dest: "/home/{{ ansible_user }}/.config/nvim"
+        state: link
+
+    - name: create a link to Sway config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/sway"
+        dest: "/home/{{ ansible_user }}/.config/sway"
+        state: link
+
+    - name: create a link to Waybar config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/waybar"
+        dest: "/home/{{ ansible_user }}/.config/waybar"
+        state: link
+
+    - name: create a link to Zshrc config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/zsh/.zshrc"
+        dest: "/home/{{ ansible_user }}/.zshrc"
+        state: link
+
+    - name: set SDDM theme
+      community.general.ini_file:
+        path: /etc/sddm.conf
+        section: Theme
+        option: Current
+        # value: catppuccin-mocha
+        value: sugar-candy
+      become: yes
+
+    - name: set system to boot into graphical target
+      ansible.builtin.file:
+        src: /usr/lib/systemd/system/graphical.target
+        dest: /etc/systemd/system/default.target
+        state: link
+        force: yes
+      become: yes

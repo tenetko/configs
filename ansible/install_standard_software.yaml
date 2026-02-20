@@ -1,0 +1,164 @@
+---
+- name: install standard software
+  hosts: new_installation
+  become: yes
+
+  vars:
+    rpmfusion_free: "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+    rpmfusion_nonfree: "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+
+    apps:
+      - blender
+      - feh
+      - ffmpeg
+      - gammastep
+      - gammastep-indicator
+      - gimp
+      - keepassxc
+      - libreoffice
+      - qimgv
+      - speedcrunch
+      - transmission-daemon
+      - vlc
+      - zathura
+      - zathura-djvu
+      - zathura-pdf-mupdf
+
+    fcitx5:
+      - fcitx5
+      - fcitx5-chinese-addons
+      - fcitx5-chinese-addons-data
+      - fcitx5-configtool
+      - fcitx5-gtk
+      - fcitx5-qt
+      - fcitx5-qt6
+      - fcitx5-table-extra
+
+    sway:
+      - fuzzel
+      - sway
+      - waybar
+
+    system_tools:
+      - acpid
+      - alacritty
+      - btrfs-progs
+      - cronie
+      - gcc
+      - make
+      - pipewire
+      - pulseaudio-utils
+      - python3-dnf
+      - qt5-qtgraphicaleffects
+      - qt5-qtquickcontrols2
+      - qt5-qtsvg
+      - sddm
+      - sddm-themes
+      - snapd
+      - tar
+
+    tools:
+      - 7zip
+      - adwaita-icon-theme
+      - ansible
+      - aria2
+      - bind-utils
+      - dunst
+      - fd-find
+      - fuse-zip
+      - git
+      - golang
+      - glances
+      - highlight
+      - iftop
+      - iotop
+      - kubernetes
+      - light
+      - luarocks
+      - mycli
+      - neovim
+      - ncdu
+      - pavucontrol
+      - pgcli
+      - pipx
+      - procps-ng
+      - pulseaudio-utils
+      - ranger
+      - unzip
+      - vifm
+      - vim-enhanced
+      - wl-clipboard
+      - zsh
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+
+  tasks:
+    - name: silence root bashrc for Ansible
+      ansible.builtin.lineinfile:
+        path: /root/.bashrc
+        line: "[[ $- != *i* ]] && return"
+        insertbefore: BOF
+        create: yes
+      become: yes
+
+    - name: detect the 'new_installation' machine geolocation
+      ansible.builtin.uri:
+        url: https://ipinfo.io/json
+        return_content: true
+      register: ipinfo
+
+    - name: print detected country
+      ansible.builtin.debug:
+        msg: "Target is in: {{ ipinfo.json.country }} (City: {{ ipinfo.json.city }})"
+
+    - name: install RPM Fusion Free
+      ansible.builtin.dnf5:
+        name: "{{ rpmfusion_free }}"
+        state: present
+        disable_gpg_check: yes
+
+    - name: install RPM Fusion Non-Free
+      ansible.builtin.dnf5:
+        name: "{{ rpmfusion_nonfree }}"
+        state: present
+        disable_gpg_check: yes
+
+    - name: enable Fedora Workstation repos
+      ansible.builtin.dnf5:
+        name: fedora-workstation-repositories
+        state: present
+
+    - name: update all packages to latest version
+      ansible.builtin.dnf5:
+        name: "*"
+        state: latest
+        update_only: yes
+        disablerepo: fedora-cisco-openh264
+        exclude: openh264,mozilla-openh264
+
+    - name: install sway
+      ansible.builtin.dnf5:
+        name: "{{ sway }}"
+        state: present
+        disablerepo: fedora-cisco-openh264
+        exclude: openh264,mozilla-openh264
+
+    - name: install system_tools
+      ansible.builtin.dnf5:
+        name: "{{ system_tools }}"
+        state: present
+
+    - name: install tools
+      ansible.builtin.dnf5:
+        name: "{{ tools }}"
+        state: present
+
+    - name: install apps
+      ansible.builtin.dnf5:
+        name: "{{ apps }}"
+        state: present
+
+    - name: install Fcitx5
+      ansible.builtin.dnf5:
+        name: "{{ fcitx5 }}"
+        state: present

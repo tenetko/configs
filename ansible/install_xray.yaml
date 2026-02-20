@@ -1,0 +1,38 @@
+---
+- name: install xray
+  hosts: new_installation
+  become: yes
+
+  tasks:
+    - name: check if Xray is installed
+      ansible.builtin.stat:
+        path: /usr/local/bin/xray
+      register: xray
+
+    - name: run Xray installation script
+      ansible.builtin.shell:
+        cmd: bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
+        creates: /usr/local/bin/xray
+      when: not xray.stat.exists
+
+    - name: enable v2rayA COPR repository
+      community.general.copr:
+        name: zhullyb/v2rayA
+        state: enabled
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: install v2rayA
+      ansible.builtin.dnf5:
+        name: v2raya
+        state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: enable and start v2raya daemon
+      ansible.builtin.service:
+        name: v2raya
+        state: started
+        enabled: yes

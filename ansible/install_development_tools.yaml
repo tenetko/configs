@@ -1,0 +1,98 @@
+---
+- name: install development tools
+  hosts: new_installation
+
+  vars:
+    python_modules:
+      - poetry-dotenv-plugin
+      - python-dotenv
+
+  tasks:
+    - name: check if Pyenv is installed
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user }}/.pyenv"
+      register: pyenv
+
+    - name: install Pyenv
+      ansible.builtin.shell: |
+        curl -fsSL https://pyenv.run | bash
+      when: not pyenv.stat.exists
+
+    - name: install Poetry
+      community.general.pipx:
+        name: poetry
+
+    - name: install Python modules
+      ansible.builtin.pip:
+        name: "{{ python_modules }}"
+
+    - name: check if Golang hast been installed via go install
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user }}/go/bin/go{{ go_version }}"
+      register: go_installation
+
+    - name: install Go via go install
+      ansible.builtin.command:
+        cmd: go install golang.org/dl/go{{go_version}}@latest
+      when: not go_installation.stat.exists
+
+    - name: remove Go installed via dnf (because we already have Go installed via go install)
+      ansible.builtin.dnf5:
+        name: golang
+        state: absent
+        autoremove: yes
+      become: yes
+
+    - name: check if Go SDK has been installed
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user }}/sdk/go{{ go_version }}"
+      register: go_sdk_installation
+
+    - name: download Go SDK
+      ansible.builtin.command:
+        cmd: "go{{ go_version }} download"
+      environment:
+        PATH: "/home/{{ ansible_user }}/go/bin:{{ ansible_env.PATH }}"
+      when: not go_sdk_installation.stat.exists
+
+    - name: check if Delve has been installed
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user }}/go/bin/dlv"
+      register: delve_installation
+
+    - name: install Delve
+      ansible.builtin.command:
+        cmd: "go{{ go_version }} install github.com/go-delve/delve/cmd/dlv@latest"
+      environment:
+        PATH: "/home/{{ ansible_user }}/go/bin:{{ ansible_env.PATH }}"
+      args:
+        creates: "/home/{{ ansible_user }}/go/bin/dlv"
+      when: not delve_installation.stat.exists
+
+    - name: check if golangci-lint has been installed
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user }}/go/bin/golangci-lint"
+      register: golangci_lint_installation
+
+    - name: install golangci-lint
+      ansible.builtin.command:
+        cmd: go{{ go_version }} install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      environment:
+        PATH: "/home/{{ ansible_user }}/go/bin:{{ ansible_env.PATH }}"
+      args:
+        creates: "/home/{{ ansible_user }}/go/bin/golangci-lint"
+      when: not golangci_lint_installation.stat.exists
+
+    - name: check if goimports has been installed
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user }}/go/bin/goimports"
+      register: goimports_installation
+
+    - name: install goimports
+      ansible.builtin.command:
+        cmd: "go{{ go_version }} install golang.org/x/tools/cmd/goimports@latest"
+      environment:
+        PATH: "/home/{{ ansible_user }}/go/bin:{{ ansible_env.PATH }}"
+      args:
+        creates: "/home/{{ ansible_user }}/go/bin/goimports"
+      when: not goimports_installation.stat.exists
