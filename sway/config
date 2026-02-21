@@ -131,9 +131,6 @@ input 2:14:ETPS/2_Elantech_TrackPoint {
     pointer_accel -0.2
 }
 
-set $wallpapers_path ~/m/wallpapers/hong\ kong/
-output * bg $(find $wallpapers_path -type f | shuf -n 1) fill
-
 # exec gammastep -O 6800 -g 1.1:0.9:1.1
 exec gammastep -m wayland -l 55.81:37.72 -t 6800:3500 -g 1.1:0.9:1.1
 exec_always fcitx5 -d --replace

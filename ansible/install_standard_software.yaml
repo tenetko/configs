@@ -37,6 +37,7 @@
     sway:
       - fuzzel
       - sway
+      - swaybg
       - waybar
 
     system_tools:
@@ -52,6 +53,10 @@
       - qt5-qtgraphicaleffects
       - qt5-qtquickcontrols2
       - qt5-qtsvg
+      - qt6-qt5compat
+      - qt6-qtquickcontrols2
+      - qt6-qtshadertools
+      - qt6-qtsvg
       - sddm
       - sddm-themes
       - snapd

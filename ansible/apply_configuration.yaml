@@ -93,8 +93,8 @@
         path: /etc/sddm.conf
         section: Theme
         option: Current
-        # value: catppuccin-mocha
-        value: sugar-candy
+        value: catppuccin-mocha
+        # value: sugar-candy
       become: yes
 
     - name: set system to boot into graphical target
@@ -103,4 +103,18 @@
         dest: /etc/systemd/system/default.target
         state: link
         force: yes
+      become: yes
+
+    - name: create Megasync directory
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/megasync"
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+        mode: "0700"
+
+    - name: set zsh as default shell
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        shell: /bin/zsh
       become: yes
