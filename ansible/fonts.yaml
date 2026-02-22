@@ -31,6 +31,9 @@
         name: "{{ fonts }}"
         state: present
       notify: refresh font cache
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: ensure a directory for Material Design Webfont exists
       ansible.builtin.file:

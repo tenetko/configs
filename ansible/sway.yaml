@@ -15,13 +15,17 @@
       ansible.builtin.dnf5:
         name: "{{ sway }}"
         state: present
-        disablerepo: fedora-cisco-openh264
-        exclude: openh264,mozilla-openh264
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: uninstall standard swaylock
       ansible.builtin.dnf5:
         name: swaylock
         state: absent
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: enable swaylock-effects COPR repository
       community.general.copr:

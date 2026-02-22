@@ -19,6 +19,9 @@
       ansible.builtin.dnf5:
         name: google-chrome-stable
         state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: add Megasync repository
       ansible.builtin.yum_repository:
@@ -36,6 +39,9 @@
       ansible.builtin.dnf5:
         name: megasync
         state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: add Slack repository
       ansible.builtin.yum_repository:
@@ -53,12 +59,18 @@
       ansible.builtin.dnf5:
         name: slack
         state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: install Zoom
       ansible.builtin.dnf5:
         name: https://cdn.zoom.us/prod/6.7.5.6891/zoom_x86_64.rpm
         state: present
         disable_gpg_check: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: check if keyd is installed
       ansible.builtin.stat:
@@ -99,6 +111,9 @@
         name: ffmpeg
         state: present
         allowerasing: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: check if cliphist is installed
       ansible.builtin.stat:

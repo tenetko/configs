@@ -42,6 +42,9 @@
         state: absent
         autoremove: yes
       become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: check if Go SDK has been installed
       ansible.builtin.stat:

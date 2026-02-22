@@ -11,6 +11,7 @@
       - blender
       - feh
       - ffmpeg
+      - firefox
       - gammastep
       - gammastep-indicator
       - gimp
@@ -19,6 +20,7 @@
       - qimgv
       - speedcrunch
       - telegram-desktop
+      - thunderbird
       - transmission-daemon
       - vlc
       - zathura
@@ -90,6 +92,7 @@
       - procps-ng
       - pulseaudio-utils
       - ripgrep
+      - unrar
       - unzip
       - vifm
       - vim-enhanced
@@ -112,42 +115,64 @@
         name: "{{ rpmfusion_free }}"
         state: present
         disable_gpg_check: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: install RPM Fusion Non-Free
       ansible.builtin.dnf5:
         name: "{{ rpmfusion_nonfree }}"
         state: present
         disable_gpg_check: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: enable Fedora Workstation repos
       ansible.builtin.dnf5:
         name: fedora-workstation-repositories
         state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: update all packages to latest version
       ansible.builtin.dnf5:
         name: "*"
         state: latest
         update_only: yes
-        disablerepo: fedora-cisco-openh264
-        exclude: openh264,mozilla-openh264
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: install system_tools
       ansible.builtin.dnf5:
         name: "{{ system_tools }}"
         state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: install tools
       ansible.builtin.dnf5:
         name: "{{ tools }}"
         state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: install apps
       ansible.builtin.dnf5:
         name: "{{ apps }}"
         state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
 
     - name: install Fcitx5
       ansible.builtin.dnf5:
         name: "{{ fcitx5 }}"
         state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
