@@ -1,4 +1,5 @@
 ---
+- ansible.builtin.import_playbook: show_remote_location.yaml
 - ansible.builtin.import_playbook: standard_software.yaml
 - ansible.builtin.import_playbook: custom_software.yaml
 - ansible.builtin.import_playbook: fonts.yaml

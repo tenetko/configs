@@ -38,11 +38,19 @@
       - fcitx5-table-extra
 
     system_tools:
+      - acpi
       - acpid
       - alacritty
+      - android-file-transfer
       - btrfs-progs
+      - colordiff
       - cronie
+      - cups
+      - dictd-server
       - gcc
+      - gvfs-mtp
+      - jmtpfs
+      - libmtp
       - make
       - pipewire
       - pulseaudio-utils
@@ -57,7 +65,9 @@
       - sddm
       - sddm-themes
       - snapd
+      - system-config-printer
       - tar
+      - whois
       - zoxide
 
     tools:
@@ -67,6 +77,7 @@
       - aria2
       - bind-utils
       - brightnessctl
+      - calibre
       - dunst
       - fd-find
       - ffmpegthumbnailer
