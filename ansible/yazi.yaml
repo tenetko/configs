@@ -1,0 +1,54 @@
+---
+- name: install yazi
+  hosts: new_installation
+  become: yes
+
+  tasks:
+    - name: check installed Yazi version
+      ansible.builtin.shell: "yazi --version | awk '{print $2}'"
+      register: installed_yazi_version
+      ignore_errors: yes
+      changed_when: false
+
+    - name: get latest Yazi release info
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/sxyazi/yazi/releases/latest
+        return_content: true
+      register: github_yazi
+
+    - name: install or update Yazi
+      block:
+        - name: create temporary directory for Yazi
+          ansible.builtin.tempfile:
+            state: directory
+            suffix: _yazi
+          register: temp_yazi_dir
+
+        - name: download and unarchive Yazi
+          ansible.builtin.unarchive:
+            src: "https://github.com/sxyazi/yazi/releases/download/{{ github_yazi.json.tag_name }}/yazi-x86_64-unknown-linux-gnu.zip"
+            dest: "{{ temp_yazi_dir.path }}"
+            remote_src: yes
+
+        - name: install Yazi binary
+          ansible.builtin.copy:
+            src: "{{ temp_yazi_dir.path }}/yazi-x86_64-unknown-linux-gnu/{{ item }}"
+            dest: "/usr/local/bin/{{ item }}"
+            mode: "0755"
+            remote_src: yes
+          loop:
+            - yazi
+            - ya
+
+        - name: remove temporary directory
+          ansible.builtin.file:
+            path: "{{ temp_yazi_dir.path }}"
+            state: absent
+
+      vars:
+        current_v: "{{ installed_yazi_version.stdout | default('0.0.0') }}"
+        latest_v: "{{ github_yazi.json.tag_name | regex_replace('^v', '') }}"
+
+      when: >
+        installed_yazi_version.rc != 0 or 
+        current_v != latest_v

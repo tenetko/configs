@@ -1,0 +1,40 @@
+---
+- name: install sway
+  hosts: new_installation
+  become: yes
+
+  vars:
+    sway:
+      - fuzzel
+      - sway
+      - swaybg
+      - waybar
+
+  tasks:
+    - name: install sway
+      ansible.builtin.dnf5:
+        name: "{{ sway }}"
+        state: present
+        disablerepo: fedora-cisco-openh264
+        exclude: openh264,mozilla-openh264
+
+    - name: uninstall standard swaylock
+      ansible.builtin.dnf5:
+        name: swaylock
+        state: absent
+
+    - name: enable swaylock-effects COPR repository
+      community.general.copr:
+        name: eddsalkield/swaylock-effects
+        state: enabled
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: install swaylock-effects
+      ansible.builtin.dnf5:
+        name: swaylock-effects
+        state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888

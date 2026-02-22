@@ -18,6 +18,7 @@
       - libreoffice
       - qimgv
       - speedcrunch
+      - telegram-desktop
       - transmission-daemon
       - vlc
       - zathura
@@ -33,12 +34,6 @@
       - fcitx5-qt
       - fcitx5-qt6
       - fcitx5-table-extra
-
-    sway:
-      - fuzzel
-      - sway
-      - swaybg
-      - waybar
 
     system_tools:
       - acpid
@@ -61,6 +56,7 @@
       - sddm-themes
       - snapd
       - tar
+      - zoxide
 
     tools:
       - 7zip
@@ -68,15 +64,19 @@
       - ansible
       - aria2
       - bind-utils
+      - brightnessctl
       - dunst
       - fd-find
+      - ffmpegthumbnailer
       - fuse-zip
       - git
       - golang
       - glances
       - highlight
       - iftop
+      - ImageMagick
       - iotop
+      - jq
       - kubernetes
       - light
       - luarocks
@@ -86,9 +86,10 @@
       - pavucontrol
       - pgcli
       - pipx
+      - poppler-utils
       - procps-ng
       - pulseaudio-utils
-      - ranger
+      - ripgrep
       - unzip
       - vifm
       - vim-enhanced
@@ -105,16 +106,6 @@
         insertbefore: BOF
         create: yes
       become: yes
-
-    - name: detect the 'new_installation' machine geolocation
-      ansible.builtin.uri:
-        url: https://ipinfo.io/json
-        return_content: true
-      register: ipinfo
-
-    - name: print detected country
-      ansible.builtin.debug:
-        msg: "Target is in: {{ ipinfo.json.country }} (City: {{ ipinfo.json.city }})"
 
     - name: install RPM Fusion Free
       ansible.builtin.dnf5:
@@ -138,13 +129,6 @@
         name: "*"
         state: latest
         update_only: yes
-        disablerepo: fedora-cisco-openh264
-        exclude: openh264,mozilla-openh264
-
-    - name: install sway
-      ansible.builtin.dnf5:
-        name: "{{ sway }}"
-        state: present
         disablerepo: fedora-cisco-openh264
         exclude: openh264,mozilla-openh264
 

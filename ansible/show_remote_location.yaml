@@ -1,0 +1,13 @@
+---
+- name: show remote location
+  hosts: new_installation
+  tasks:
+    - name: detect the 'new_installation' machine geolocation
+      ansible.builtin.uri:
+        url: https://ipinfo.io/json
+        return_content: true
+      register: ipinfo
+
+    - name: print detected country
+      ansible.builtin.debug:
+        msg: "Target is in: {{ ipinfo.json.country }} (City: {{ ipinfo.json.city }})"

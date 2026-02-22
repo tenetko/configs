@@ -1,0 +1,10 @@
+---
+- ansible.builtin.import_playbook: standard_software.yaml
+- ansible.builtin.import_playbook: custom_software.yaml
+- ansible.builtin.import_playbook: fonts.yaml
+- ansible.builtin.import_playbook: development_tools.yaml
+- ansible.builtin.import_playbook: sway.yaml
+- ansible.builtin.import_playbook: xray.yaml
+- ansible.builtin.import_playbook: yazi.yaml
+- ansible.builtin.import_playbook: configs.yaml
+- ansible.builtin.import_playbook: services.yaml
