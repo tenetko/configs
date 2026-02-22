@@ -1,0 +1,14 @@
+[binds]
+h = prev
+l = next
+
+j = zoom 1
+k = zoom -1
+
+<Shift+H> = pan 50 0
+<Shift+L> = pan -50 0
+<Shift+K> = pan 0 50
+<Shift+J> = pan 0 -50
+
+q = quit
+<Escape> = quit

@@ -89,6 +89,7 @@
       - htop
       - iftop
       - ImageMagick
+      - imv
       - iotop
       - jq
       - kubernetes

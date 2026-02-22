@@ -14,16 +14,11 @@
           SDL_IM_MODULE=fcitx
       become: yes
 
-    - name: check if ~/configs directory exists
-      ansible.builtin.stat:
-        path: "/home/{{ ansible_user }}/configs"
-      register: configs_directory
-
-    - name: clone configs repository
+    - name: clone or pull configs repository
       ansible.builtin.git:
         repo: "https://github.com/tenetko/configs"
         dest: "/home/{{ ansible_user }}/configs"
-      when: not configs_directory.stat.exists
+        update: yes
 
     - name: create a link to Alacritty config
       ansible.builtin.file:
@@ -41,6 +36,18 @@
       ansible.builtin.file:
         src: "/home/{{ ansible_user }}/configs/dunst"
         dest: "/home/{{ ansible_user }}/.config/dunst"
+        state: link
+
+    - name: create a link to feh config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/feh"
+        dest: "/home/{{ ansible_user }}/.config/feh"
+        state: link
+
+    - name: create a link to imv config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/imv"
+        dest: "/home/{{ ansible_user }}/.config/imv"
         state: link
 
     - name: check if /etc/keyd exists
@@ -102,7 +109,6 @@
         src: /usr/lib/systemd/system/graphical.target
         dest: /etc/systemd/system/default.target
         state: link
-        force: yes
       become: yes
 
     - name: create Megasync directory
