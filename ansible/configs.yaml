@@ -14,11 +14,11 @@
           SDL_IM_MODULE=fcitx
       become: yes
 
-    - name: clone or pull configs repository
-      ansible.builtin.git:
-        repo: "https://github.com/tenetko/configs"
-        dest: "/home/{{ ansible_user }}/configs"
-        update: yes
+    # - name: clone or pull configs repository
+    #   ansible.builtin.git:
+    #     repo: "https://github.com/tenetko/configs"
+    #     dest: "/home/{{ ansible_user }}/configs"
+    #     update: yes
 
     - name: create a link to Alacritty config
       ansible.builtin.file:
