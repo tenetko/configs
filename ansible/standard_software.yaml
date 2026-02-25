@@ -105,6 +105,7 @@
       - procps-ng
       - pulseaudio-utils
       - ripgrep
+      - sshpass
       - unrar
       - unzip
       - vifm

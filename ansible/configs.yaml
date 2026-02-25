@@ -77,6 +77,12 @@
         dest: "/home/{{ ansible_user }}/.config/nvim"
         state: link
 
+    - name: create a link to Starship config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/starship/starship.toml"
+        dest: "/home/{{ ansible_user }}/.config/starship.toml"
+        state: link
+
     - name: create a link to Sway config
       ansible.builtin.file:
         src: "/home/{{ ansible_user }}/configs/sway"
