@@ -211,3 +211,14 @@
       community.general.snap:
         name: kooha
         state: present
+
+    - name: install Dbeaver-ce
+      community.general.snap:
+        name: dbeaver-ce
+        state: present
+        classic: true
+
+    - name: install Steam
+      community.general.snap:
+        name: steam
+        state: present

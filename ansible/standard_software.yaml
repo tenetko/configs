@@ -48,6 +48,7 @@
       - cronie
       - cups
       - direnv
+      - flatpak
       - gcc
       - gvfs-mtp
       - jmtpfs
