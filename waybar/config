@@ -70,13 +70,13 @@
     },
 
     "custom/iqair": {
-        "exec": "~/.config/bar_modules/iqair-waybar.sh",
+        "exec": "~/.config/bar-modules/iqair-waybar.sh",
         "interval": 600,
         "format": "{}" 
     },
 
     "custom/openweathermap": {
-        "exec": "~/.config/bar_modules/openweathermap-waybar.sh",
+        "exec": "~/.config/bar-modules/openweathermap-waybar.sh",
         "interval": 600,
         "format": "{}"
     },

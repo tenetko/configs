@@ -1,6 +1,6 @@
 #!/bin/sh
 
-aqius=$(python ~/.config/polybar/modules/iqair.py)
+aqius=$(python ~/.config/bar-modules/iqair.py)
 
 if [ "$aqius" -lt 50 ]; then
   echo "<span foreground='#009966'>󰌪</span> $aqius"
