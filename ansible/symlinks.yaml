@@ -11,13 +11,13 @@
 
     - name: create a shortlink to ~/megasync/experience directory
       ansible.builtin.file:
-        src: "/home/{{ ansible_user }}/megasync"
+        src: "/home/{{ ansible_user }}/megasync/experience"
         dest: "/home/{{ ansible_user }}/e"
         state: link
 
     - name: create a shortlink to ~/megasync/work directory
       ansible.builtin.file:
-        src: "/home/{{ ansible_user }}/megasync"
+        src: "/home/{{ ansible_user }}/megasync/work"
         dest: "/home/{{ ansible_user }}/w"
         state: link
 
