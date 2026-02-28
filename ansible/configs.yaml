@@ -14,6 +14,21 @@
           SDL_IM_MODULE=fcitx
       become: yes
 
+    - name: create /usr/lib/systemd/system-sleep/kbd-backlight.sh
+      ansible.builtin.copy:
+        dest: /usr/lib/systemd/system-sleep/kbd-backlight.sh
+        mode: "0755"
+        content: |
+          #!/bin/sh
+
+          # $1 is the phase: "pre" (going to sleep) or "post" (waking up)
+          # $2 is the mode: "suspend", "hibernate", etc.
+
+          if [ "$1" = "post" ]; then
+              brightnessctl -d 'tpacpi::kbd_backlight' s 1
+          fi
+      become: yes
+
     # - name: clone or pull configs repository
     #   ansible.builtin.git:
     #     repo: "https://github.com/tenetko/configs"
