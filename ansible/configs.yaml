@@ -125,24 +125,6 @@
         group: "{{ ansible_user_gid }}"
         mode: "0700"
 
-    - name: create a shortlink to ~/megasync directory
-      ansible.builtin.file:
-        src: "/home/{{ ansible_user }}/megasync"
-        dest: "/home/{{ ansible_user }}/m"
-        state: link
-
-    - name: create a shortlink to ~/megasync/experience directory
-      ansible.builtin.file:
-        src: "/home/{{ ansible_user }}/megasync"
-        dest: "/home/{{ ansible_user }}/e"
-        state: link
-
-    - name: create a shortlink to ~/megasync/work directory
-      ansible.builtin.file:
-        src: "/home/{{ ansible_user }}/megasync"
-        dest: "/home/{{ ansible_user }}/w"
-        state: link
-
     - name: set zsh as default shell
       ansible.builtin.user:
         name: "{{ ansible_user }}"

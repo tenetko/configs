@@ -1,0 +1,28 @@
+---
+- name: create symlinks
+  hosts: new_installation
+
+  tasks:
+    - name: create a shortlink to ~/megasync directory
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/megasync"
+        dest: "/home/{{ ansible_user }}/m"
+        state: link
+
+    - name: create a shortlink to ~/megasync/experience directory
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/megasync"
+        dest: "/home/{{ ansible_user }}/e"
+        state: link
+
+    - name: create a shortlink to ~/megasync/work directory
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/megasync"
+        dest: "/home/{{ ansible_user }}/w"
+        state: link
+
+    - name: create a shortlink to ~/Downloads directory
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/Downloads"
+        dest: "/home/{{ ansible_user }}/temp"
+        state: link
