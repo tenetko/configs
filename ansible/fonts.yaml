@@ -103,6 +103,59 @@
 
       when: not hack_nerd_font_regular.stat.exists
 
+    - name: get latest Hack font release data
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/source-foundry/hack/releases/latest
+        return_content: true
+      register: gh_latest_hack_font
+
+    - name: check if Hack Font is installed
+      ansible.builtin.stat:
+        path: /usr/share/fonts/hack-font/Hack-Regular.ttf
+      register: hack_font_regular
+
+    - name: install Hack Font
+      block:
+        - name: create temporary directory for fonts
+          ansible.builtin.tempfile:
+            state: directory
+            suffix: _hack
+          register: temp_font_dir
+
+        - name: unarchive Hack Font to temp
+          ansible.builtin.unarchive:
+            src: "https://github.com/source-foundry/hack/releases/download/{{ gh_latest_hack_font.json.tag_name }}/Hack-{{ gh_latest_hack_font.json.tag_name }}-ttf.tar.xz"
+            dest: "{{ temp_font_dir.path }}"
+            remote_src: yes
+
+        - name: ensure a directory for Hack Font exists
+          ansible.builtin.file:
+            path: /usr/share/fonts/hack-font
+            state: directory
+            owner: root
+            group: root
+            mode: "0755"
+
+        - name: install specific Hack Font files
+          ansible.builtin.copy:
+            src: "{{ temp_font_dir.path }}/{{ item }}"
+            dest: /usr/share/fonts/hack-font/{{ item }}
+            remote_src: yes
+            mode: "0644"
+          loop:
+            - Hack-BoldItalic.ttf
+            - Hack-Bold.ttf
+            - Hack-Italic.ttf
+            - Hack-Regular.ttf
+          notify: refresh font cache
+
+        - name: remove temporary directory
+          ansible.builtin.file:
+            path: "{{ temp_font_dir.path }}"
+            state: absent
+
+      when: not hack_font_regular.stat.exists
+
   handlers:
     - name: refresh font cache
       ansible.builtin.command: fc-cache -fv
