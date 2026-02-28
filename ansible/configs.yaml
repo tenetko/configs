@@ -44,6 +44,12 @@
         dest: "/home/{{ ansible_user }}/.config/feh"
         state: link
 
+    - name: create a link to Fuzzel config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/fuzzel"
+        dest: "/home/{{ ansible_user }}/.config/fuzzel"
+        state: link
+
     - name: create a link to hyprlock config
       ansible.builtin.file:
         src: "/home/{{ ansible_user }}/configs/hypr"
