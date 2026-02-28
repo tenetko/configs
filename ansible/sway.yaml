@@ -19,25 +19,17 @@
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
 
-    - name: uninstall standard swaylock
-      ansible.builtin.dnf5:
-        name: swaylock
-        state: absent
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
-
-    - name: enable swaylock-effects COPR repository
+    - name: enable hyprlock COPR repository
       community.general.copr:
-        name: eddsalkield/swaylock-effects
+        name: solopasha/hyprland
         state: enabled
       environment:
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
 
-    - name: install swaylock-effects
+    - name: install hyprlock
       ansible.builtin.dnf5:
-        name: swaylock-effects
+        name: hyprlock
         state: present
       environment:
         http_proxy: http://127.0.0.1:8888

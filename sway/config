@@ -96,7 +96,6 @@ set $screenlock ~/.config/sway/lock.sh
 bindsym --to-code $mod+x exec $screenlock
 
 # App_id is for Wayland native apps, class is for XWayland apps
-for_window [class="cc_receiver"] floating enable 
 for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="nm-connection-editor"] floating enable
 for_window [app_id="swappy"] floating enable
@@ -105,6 +104,17 @@ for_window [window_role="pop-up"] floating enable
 for_window [window_role="bubble"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [window_role="preferences"] floating enable
+
+# Force specific Zoom windows to float
+for_window [class="zoom" title="^Settings$"] floating enable
+for_window [class="zoom" title="^Participants$"] floating enable
+for_window [class="zoom" title="^Chat$"] floating enable
+for_window [class="zoom" title="^Meeting Information$"] floating enable
+for_window [class="zoom" title="^cc_receiver$"] floating enable, sticky enable, border none
+
+# Catch-all for Zoom popups (dialogs)
+for_window [class="zoom" window_role="pop-up"] floating enable
+for_window [class="zoom" window_type="dialog"] floating enable
 
 bar {
     swaybar_command waybar

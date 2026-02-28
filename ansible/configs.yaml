@@ -44,6 +44,12 @@
         dest: "/home/{{ ansible_user }}/.config/feh"
         state: link
 
+    - name: create a link to hyprlock config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/hypr"
+        dest: "/home/{{ ansible_user }}/.config/hypr"
+        state: link
+
     - name: create a link to imv config
       ansible.builtin.file:
         src: "/home/{{ ansible_user }}/configs/imv"
