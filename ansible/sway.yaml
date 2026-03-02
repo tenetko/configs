@@ -6,6 +6,7 @@
   vars:
     sway:
       - fuzzel
+      - swappy
       - sway
       - swaybg
       - waybar
