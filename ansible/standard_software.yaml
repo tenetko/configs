@@ -114,6 +114,7 @@
       - unzip
       - vifm
       - vim-enhanced
+      - vimiv-qt
       - wl-clipboard
       - zsh
       - zsh-autosuggestions
