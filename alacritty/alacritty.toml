@@ -60,3 +60,6 @@ action = "Copy"
 key = "М"
 mods = "Control|Shift"
 action = "Paste"
+
+[window]
+opacity = 0.8
