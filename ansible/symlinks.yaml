@@ -21,6 +21,12 @@
         dest: "/home/{{ ansible_user }}/w"
         state: link
 
+    - name: create ~/Downloads directory
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/Downloads"
+        state: directory
+        mode: "0700"
+
     - name: create a shortlink to ~/Downloads directory
       ansible.builtin.file:
         src: "/home/{{ ansible_user }}/Downloads"
