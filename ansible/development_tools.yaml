@@ -99,3 +99,9 @@
       args:
         creates: "/home/{{ ansible_user }}/go/bin/goimports"
       when: not goimports_installation.stat.exists
+
+    - name: make a symlink for Go
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/go/bin/go{{go_version}}"
+        dest: "/home/{{ ansible_user }}/go/bin/go"
+        state: link
