@@ -109,6 +109,7 @@
       - procps-ng
       - pulseaudio-utils
       - ripgrep
+      - rsync
       - sshpass
       - unrar
       - unzip

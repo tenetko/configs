@@ -141,7 +141,9 @@ input 2:14:ETPS/2_Elantech_TrackPoint {
 }
 
 # exec gammastep -O 6800 -g 1.1:0.9:1.1
-exec gammastep -m wayland -l 55.81:37.72 -t 6800:3500 -g 1.1:0.9:1.1
+# exec gammastep -m wayland -l 55.81:37.72 -t 6800:3500 -g 1.1:0.9:1.1
+# exec gammastep
+exec gammastep-indicator
 exec_always fcitx5 -d --replace
 exec sleep 3 && megasync
 exec dunst

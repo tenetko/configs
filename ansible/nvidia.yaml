@@ -41,6 +41,7 @@
     - name: set global environment variables for NVIDIA/Wayland
       ansible.builtin.blockinfile:
         path: /etc/environment
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - NVIDIA"
         block: |
           # Hardware cursors sometimes disappear on NVIDIA/Wayland.
           # If the cursor is invisible, keep this enabled.
