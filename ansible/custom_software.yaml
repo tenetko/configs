@@ -222,3 +222,23 @@
       community.general.snap:
         name: steam
         state: present
+
+    - name: add Brave repository
+      ansible.builtin.yum_repository:
+        name: brave-browser
+        description: brave-browser
+        file: brave-browser
+        baseurl: "https://brave-browser-rpm-release.s3.brave.com/$basearch"
+        gpgkey: "https://brave-browser-rpm-release.s3.brave.com/brave-core.asc"
+        gpgcheck: yes
+        enabled: yes
+        mode: "0644"
+        state: present
+
+    - name: install Brave
+      ansible.builtin.dnf5:
+        name: brave-browser
+        state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
