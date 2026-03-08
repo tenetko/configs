@@ -154,7 +154,7 @@ timeout 600 'swaymsg "output * power off"' \
 resume 'swaymsg "output * power on"' \
 before-sleep '$screenlock'
 
-exec_always ~/.config/sway/set_wallpaper.sh
+exec_always ~/.config/sway/rotate_wallpaper.sh
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store
