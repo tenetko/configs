@@ -242,3 +242,23 @@
       environment:
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
+
+    - name: add Pritunl repository
+      ansible.builtin.yum_repository:
+        name: pritunl
+        description: Pritunl Stable Repository
+        file: pritunl
+        baseurl: "https://repo.pritunl.com/stable/yum/fedora/$releasever/"
+        gpgkey: "https://raw.githubusercontent.com/pritunl/pgp/master/pritunl_repo_pub.asc"
+        gpgcheck: yes
+        enabled: yes
+        mode: "0644"
+        state: present
+
+    - name: install Pritunl
+      ansible.builtin.dnf5:
+        name: pritunl-client-electron
+        state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888

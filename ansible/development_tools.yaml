@@ -105,3 +105,7 @@
         src: "/home/{{ ansible_user }}/go/bin/go{{go_version}}"
         dest: "/home/{{ ansible_user }}/go/bin/go"
         state: link
+
+    - name: install Rich
+      community.general.pipx:
+        name: rich-cli
