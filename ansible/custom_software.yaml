@@ -262,3 +262,15 @@
       environment:
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
+
+    - name: add flathub remote
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+    - name: install Warp
+      community.general.flatpak:
+        name: app.drey.Warp
+        remote: flathub
+        state: present
