@@ -35,3 +35,9 @@
       environment:
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
+
+    - name: cron job for wallpaper
+      ansible.builtin.cron:
+        name: "rotate wallpaper"
+        minute: "*/10"
+        job: "/home/{{ ansible_user }} /rotate_wallpaper.sh"
