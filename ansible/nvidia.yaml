@@ -1,0 +1,61 @@
+# To check NVIDIA drivers, run:
+# vkcube &!; watch -n 1 nvidia-smi
+---
+- name: install Nvidia drivers
+  hosts: new_installation
+  become: yes
+
+  tasks:
+    - name: install nvidia drivers and nvtop
+      ansible.builtin.dnf5:
+        name:
+          - akmod-nvidia
+          - xorg-x11-drv-nvidia-cuda
+          - nvtop
+          - vulkan-tools
+        state: present
+      notify: wait for akmod
+
+    - name: disable i2c_nvidia_gpu
+      ansible.builtin.copy:
+        dest: /etc/modprobe.d/blacklist_i2c_nvidia_gpu.conf
+        content: |
+          blacklist i2c_nvidia_gpu
+        mode: "0644"
+
+    - name: rebuild initramfs
+      ansible.builtin.shell:
+        cmd: dracut --force
+
+    - name: create nvidia-specific session for SDDM
+      ansible.builtin.copy:
+        dest: /usr/share/wayland-sessions/sway-nvidia.desktop
+        mode: "0644"
+        content: |
+          [Desktop Entry]
+          Name=Sway (NVIDIA)
+          Comment=An i3-compatible Wayland compositor (Proprietary Driver)
+          Exec=sway --unsupported-gpu
+          Type=Application
+
+    - name: set global environment variables for NVIDIA/Wayland
+      ansible.builtin.blockinfile:
+        path: /etc/environment
+        block: |
+          # Hardware cursors sometimes disappear on NVIDIA/Wayland.
+          # If the cursor is invisible, keep this enabled.
+          WLR_NO_HARDWARE_CURSORS=0
+
+          # Force apps to use Wayland backend
+          MOZ_ENABLE_WAYLAND=1
+          QT_QPA_PLATFORM=wayland
+
+          # NVIDIA specific:
+          LIBVA_DRIVER_NAME=nvidia
+          XDG_SESSION_TYPE=wayland
+          GBM_BACKEND=nvidia-drm
+          __GLX_VENDOR_LIBRARY_NAME=nvidia
+
+  handlers:
+    - name: wait for akmod
+      ansible.builtin.command: akmods --force
