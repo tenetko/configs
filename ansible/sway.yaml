@@ -41,3 +41,4 @@
         name: "rotate wallpaper"
         minute: "*/10"
         job: "/home/{{ ansible_user }} /rotate_wallpaper.sh"
+      become: no
