@@ -22,6 +22,10 @@
       community.general.pipx:
         name: poetry
 
+    - name: configure Poetry
+      ansible.builtin.shell: |
+        /home/{{ ansible_user }}/.local/bin/poetry config virtualenvs.in-project true
+
     - name: install Python modules
       ansible.builtin.pip:
         name: "{{ python_modules }}"
