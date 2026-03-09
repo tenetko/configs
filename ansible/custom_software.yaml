@@ -218,11 +218,6 @@
         state: present
         classic: true
 
-    - name: install Steam
-      community.general.snap:
-        name: steam
-        state: present
-
     - name: add Brave repository
       ansible.builtin.yum_repository:
         name: brave-browser
@@ -272,5 +267,11 @@
     - name: install Warp
       community.general.flatpak:
         name: app.drey.Warp
+        remote: flathub
+        state: present
+
+    - name: install Steam
+      community.general.flatpak:
+        name: com.valvesoftware.Steam
         remote: flathub
         state: present

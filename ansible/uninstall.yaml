@@ -1,0 +1,14 @@
+---
+- name: uninstall software
+  hosts: new_installation
+  become: yes
+  tasks:
+    - name: check if Steam is installed via Snap
+      ansible.builtin.command: snap list steam
+      register: steam_snap_check
+      failed_when: false
+      changed_when: false
+
+    - name: uninstall Steam via Snap (command-line workaround)
+      ansible.builtin.command: snap remove steam
+      when: steam_snap_check.rc == 0
