@@ -102,10 +102,11 @@
         "format": "{flag}",
         "tooltip": true,
         "tooltip-format": "{long}",
-        "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
+        "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
+        "min-length": 2
     },
 
     "tray": {
-        "spacing": 10
+        "spacing": 5
     }
 }
