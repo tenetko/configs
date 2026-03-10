@@ -40,5 +40,5 @@
       ansible.builtin.cron:
         name: "rotate wallpaper"
         minute: "*/10"
-        job: "/home/{{ ansible_user }} /rotate_wallpaper.sh"
+        job: "/home/{{ ansible_user }}/.config/sway/rotate_wallpaper.sh"
       become: no
