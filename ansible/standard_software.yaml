@@ -20,6 +20,7 @@
       - libreoffice
       - qimgv
       - speedcrunch
+      - steam
       - telegram-desktop
       - thunderbird
       - transmission-daemon
@@ -57,6 +58,7 @@
       - pipewire
       - pulseaudio-utils
       - python3-dnf
+      - qemu
       - qt5-qtgraphicaleffects
       - qt5-qtquickcontrols2
       - qt5-qtsvg
@@ -64,12 +66,15 @@
       - qt6-qtquickcontrols2
       - qt6-qtshadertools
       - qt6-qtsvg
+      - screen
       - sddm
       - sddm-themes
       - snapd
       - sshfs
       - system-config-printer
       - tar
+      - virt-manager
+      - wget
       - whois
       - zoxide
 

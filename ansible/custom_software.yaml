@@ -269,9 +269,3 @@
         name: app.drey.Warp
         remote: flathub
         state: present
-
-    - name: install Steam
-      community.general.flatpak:
-        name: com.valvesoftware.Steam
-        remote: flathub
-        state: present
