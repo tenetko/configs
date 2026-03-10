@@ -101,6 +101,7 @@
       - imv
       - iotop
       - jq
+      - keychain
       - kubernetes
       - light
       - luarocks
