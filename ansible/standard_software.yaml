@@ -102,6 +102,7 @@
       - iotop
       - jq
       - keychain
+      - kitty
       - kubernetes
       - light
       - luarocks

@@ -61,6 +61,7 @@ alias term='alacritty &!'
 alias xc='wl-copy'
 alias xp='wl-paste'
 alias v='vault'
+alias yz='yazi'
 
 # -- Environment
 export VISUAL='nvim'

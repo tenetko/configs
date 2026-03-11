@@ -30,7 +30,7 @@ family = "Hack Nerd Font"
 style = "Bold"
 
 [font.bold_italic]
-family = "monospace"
+family = "Hack Nerd Font"
 style = "Bold Italic"
 
 [font.italic]
