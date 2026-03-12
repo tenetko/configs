@@ -50,6 +50,7 @@
       - cups
       - direnv
       - flatpak
+      - freetds # for pyodbc
       - gcc
       - gvfs-mtp
       - jmtpfs
