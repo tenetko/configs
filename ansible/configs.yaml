@@ -104,6 +104,12 @@
         state: link
       become: yes
 
+    - name: create a link to Kitty config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/kitty"
+        dest: "/home/{{ ansible_user }}/.config/kitty"
+        state: link
+
     - name: create a link to Neovim + Lazyvim configs
       ansible.builtin.file:
         src: "/home/{{ ansible_user }}/configs/nvim"
