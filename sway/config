@@ -159,6 +159,7 @@ exec_always ~/.config/sway/rotate_wallpaper.sh
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store
+exec sway-audio-idle-inhibit
 
 include /etc/sway/config.d/*
 exec_always "systemctl --user import-environment WAITING_FOR_WAYLAND_DISPLAY"

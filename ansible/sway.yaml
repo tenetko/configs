@@ -42,3 +42,24 @@
         minute: "*/10"
         job: "/home/{{ ansible_user }}/.config/sway/rotate_wallpaper.sh"
       become: no
+
+    - name: clone sway-audio-idle-inhibit
+      ansible.builtin.git:
+        repo: https://github.com/ErikReider/SwayAudioIdleInhibit.git
+        dest: /tmp/sway-audio-idle-inhibit
+        version: main
+        force: yes
+
+    - name: build and install sway-audio-idle-inhibit
+      ansible.builtin.shell: |
+        meson setup build
+        ninja -C build
+        ninja -C build install
+      args:
+        chdir: /tmp/sway-audio-idle-inhibit
+        creates: /usr/local/bin/sway-audio-idle-inhibit
+
+    - name: cleanup build directory
+      ansible.builtin.file:
+        path: /tmp/sway-audio-idle-inhibit
+        state: absent

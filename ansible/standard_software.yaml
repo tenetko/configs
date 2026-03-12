@@ -52,11 +52,15 @@
       - flatpak
       - freetds # for pyodbc
       - gcc
+      - gcc-c++
       - gvfs-mtp
       - jmtpfs
       - libmtp
       - make
+      - meson # to build C++ projects
+      - ninja-build # to build C++ projects
       - pipewire
+      - pulseaudio-libs-devel
       - pulseaudio-utils
       - python3-dnf
       - qemu
@@ -73,8 +77,11 @@
       - snapd
       - sshfs
       - system-config-printer
+      - systemd-devel
       - tar
       - virt-manager
+      - wayland-devel
+      - wayland-protocols-devel
       - wget
       - whois
       - zoxide
