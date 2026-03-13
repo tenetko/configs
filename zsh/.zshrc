@@ -16,24 +16,6 @@ unsetopt beep
 bindkey -v
 export KEYTIMEOUT=1
 
-function zle-keymap-select {
-    if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
-        echo -ne '\e[2 q'
-    else
-        echo -ne '\e[5 q'
-    fi
-    zle reset-prompt
-}
-zle -N zle-keymap-select
-
-function zle-line-init {
-    zle -K viins
-    echo -ne '\e[5 q'
-    zle reset-prompt
-}
-zle -N zle-line-init
-
-
 # -- Completion
 zstyle :compinstall filename "$HOME/.zshrc"
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
@@ -63,7 +45,7 @@ alias vim='nvim'
 alias di='docker image'
 alias dc='docker container'
 alias ll='ls -lah'
-alias term='alacritty &!'
+alias term='kitty &!'
 alias xc='wl-copy'
 alias xp='wl-paste'
 alias v='vault'
