@@ -11,22 +11,28 @@ setopt SHARE_HISTORY
 # -- Options
 setopt autocd extendedglob nomatch notify
 unsetopt beep
-source ~/.local/share/zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
-# -- Starship Vi Mode
-function zvm_after_select_vi_mode() {
-  case $ZVM_MODE in
-    $ZVM_MODE_NORMAL)
-      ;;
-    $ZVM_MODE_INSERT)
-      ;;
-    $ZVM_MODE_VISUAL)
-      ;;
-    $ZVM_MODE_VISUAL_LINE)
-      ;;
-  esac
-  zle reset-prompt
+# -- Native Zsh Vi Mode
+bindkey -v
+export KEYTIMEOUT=1
+
+function zle-keymap-select {
+    if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
+        echo -ne '\e[2 q'
+    else
+        echo -ne '\e[5 q'
+    fi
+    zle reset-prompt
 }
+zle -N zle-keymap-select
+
+function zle-line-init {
+    zle -K viins
+    echo -ne '\e[5 q'
+    zle reset-prompt
+}
+zle -N zle-line-init
+
 
 # -- Completion
 zstyle :compinstall filename "$HOME/.zshrc"
