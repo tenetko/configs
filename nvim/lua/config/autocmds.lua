@@ -16,7 +16,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Autosave when leaving Insert Mode
-vim.api.nvim_create_autocmd("InsertLeave", {
+vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   pattern = "*",
   callback = function()
     -- Only save if the buffer has names and is modified
