@@ -126,6 +126,7 @@
       - ripgrep
       - rsync
       - sshpass
+      - tree
       - unrar
       - unzip
       - vifm
