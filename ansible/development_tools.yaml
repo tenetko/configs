@@ -37,6 +37,17 @@
         path: "/home/{{ ansible_user }}/go/bin/go{{ go_version }}"
       register: go_installation
 
+    - name: install Go via dnf (to be able to execute go install)
+      ansible.builtin.dnf5:
+        name: golang
+        state: present
+        autoremove: yes
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+      when: not go_installation.stat.exists
+
     - name: install Go via go install
       ansible.builtin.command:
         cmd: go install golang.org/dl/go{{go_version}}@latest

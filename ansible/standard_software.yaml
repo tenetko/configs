@@ -100,7 +100,6 @@
       - ffmpegthumbnailer
       - fuse-zip
       - git
-      - golang
       - glances
       - highlight
       - htop
