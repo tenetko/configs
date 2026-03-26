@@ -269,3 +269,16 @@
         name: app.drey.Warp
         remote: flathub
         state: present
+
+    - name: check if Argocd CLI is installed
+      ansible.builtin.stat:
+        path: /usr/local/bin/argocd
+      register: argocd
+
+    - name: install Argocd CLI tool
+      ansible.builtin.get_url:
+        url: "https://github.com/argoproj/argo-cd/releases/download/{{ argocd_version }}/argocd-linux-amd64"
+        dest: /usr/local/bin/argocd
+        mode: "0555"
+      become: yes
+      when: not argocd.stat.exists
