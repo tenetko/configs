@@ -282,3 +282,10 @@
         mode: "0555"
       become: yes
       when: not argocd.stat.exists
+
+    - name: install repomix tool
+      community.general.npm:
+        name: repomix
+        global: true
+        state: present
+      become: yes
