@@ -169,3 +169,12 @@
         name: "{{ ansible_user }}"
         shell: /bin/zsh
       become: yes
+
+    - name: enable Wayland screen sharing for Zoom
+      community.general.ini_file:
+        path: "~/.config/zoomus.conf"
+        section: General
+        option: enableWaylandShare
+        value: "true"
+        create: yes
+        mode: "0644"
