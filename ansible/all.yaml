@@ -9,3 +9,4 @@
 - ansible.builtin.import_playbook: yazi.yaml
 - ansible.builtin.import_playbook: configs.yaml
 - ansible.builtin.import_playbook: services.yaml
+- ansible.builtin.import_playbook: symlinks.yaml
