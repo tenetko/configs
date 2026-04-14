@@ -178,3 +178,10 @@
         value: "true"
         create: yes
         mode: "0644"
+
+    - name: add user to libvirt group
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        groups: libvirt
+        append: yes
+      become: yes

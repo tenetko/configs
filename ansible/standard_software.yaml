@@ -56,6 +56,9 @@
       - gvfs-mtp
       - jmtpfs
       - libmtp
+      - libvirt-client
+      - libvirt-daemon-config-network
+      - libvirt-daemon-kvm
       - make
       - meson # to build C++ projects
       - ninja-build # to build C++ projects
@@ -63,7 +66,7 @@
       - pulseaudio-libs-devel
       - pulseaudio-utils
       - python3-dnf
-      - qemu
+      - qemu-kvm
       - qt5-qtgraphicaleffects
       - qt5-qtquickcontrols2
       - qt5-qtsvg
@@ -79,7 +82,7 @@
       - system-config-printer
       - systemd-devel
       - tar
-      - virt-manager
+      - virt-viewer
       - wayland-devel
       - wayland-protocols-devel
       - wget

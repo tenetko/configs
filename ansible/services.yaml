@@ -27,3 +27,9 @@
         name: transmission-daemon
         state: started
         enabled: yes
+
+    - name: enable and start libvirt daemon
+      ansible.builtin.service:
+        name: libvirtd
+        state: started
+        enabled: yes
