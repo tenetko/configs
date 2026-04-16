@@ -3,6 +3,20 @@
   hosts: new_installation
 
   tasks:
+    - name: set global DNS defaults for all network connections
+      ansible.builtin.copy:
+        dest: /etc/NetworkManager/conf.d/99-global-dns.conf
+        mode: "0644"
+        content: |
+          [connection]
+          ipv4.ignore-auto-dns=yes
+          ipv6.ignore-auto-dns=yes
+
+          ipv4.dns=1.1.1.1;8.8.8.8;8.8.4.4;
+          ipv6.dns=2606:4700:4700::1111;2001:4860:4860::8888;
+      become: yes
+      notify: restart NetworkManager
+
     - name: create /etc/environment for Fcitx5
       ansible.builtin.blockinfile:
         path: /etc/environment
@@ -184,4 +198,11 @@
         name: "{{ ansible_user_id }}"
         groups: libvirt
         append: yes
+      become: yes
+
+  handlers:
+    - name: restart NetworkManager
+      ansible.builtin.service:
+        name: NetworkManager
+        state: restarted
       become: yes
