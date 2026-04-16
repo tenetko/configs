@@ -1,0 +1,23 @@
+default: proxy
+
+domain(domain: int.lizachu.co.uk) -> proxy
+
+ip("10.200.0.0/24") -> proxy
+
+ip("10.254.0.0/16") -> direct
+
+ip("192.168.0.0/16", "172.16.0.0/12", "10.0.0.0/8", "127.0.0.0/8", "::1/128") -> direct
+
+domain(domain: localhost, domain: cluster.local) -> direct
+
+domain(contains: ".ru") -> direct
+
+domain(domain: yandex.com, domain: yandex.net, domain: vk.com, domain: tbank.ru) -> direct
+
+domain(contains: "taobao.com", contains: "tmall.com") -> direct
+
+domain(geosite:cn) -> direct
+
+ip(geoip:ru) -> direct
+
+ip(geoip:cn) -> direct
