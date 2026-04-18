@@ -231,6 +231,24 @@
         - restart pipewire
         - restart wireplumber
 
+    - name: create xdg-desktop-portal directory
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/.config/xdg-desktop-portal"
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+        mode: "0700"
+
+    - name: create portals.conf config
+      ansible.builtin.copy:
+        dest: /home/{{ ansible_user }}/.config/xdg-desktop-portal/portals.conf
+        mode: "0644"
+        content: |
+          [preferred]
+          default=gtk
+          org.freedesktop.impl.portal.ScreenCast=wlr
+          org.freedesktop.impl.portal.Screenshot=wlr
+
   handlers:
     - name: restart NetworkManager
       ansible.builtin.service:
