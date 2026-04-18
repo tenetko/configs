@@ -204,7 +204,7 @@
       ansible.builtin.file:
         path: "/home/{{ ansible_user }}/.config/wireplumber/wireplumber.conf.d"
         state: directory
-        owner: "{{ ansible_userd }}"
+        owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_gid }}"
         mode: "0700"
 
