@@ -53,6 +53,7 @@
       - freetds # for pyodbc
       - gcc
       - gcc-c++
+      - geoclue2
       - gvfs-mtp
       - jmtpfs
       - libmtp
@@ -87,6 +88,9 @@
       - wayland-protocols-devel
       - wget
       - whois
+      - xdg-desktop-portal
+      - xdg-desktop-portal-gtk
+      - xdg-desktop-portal-wlr
       - zoxide
 
     tools:

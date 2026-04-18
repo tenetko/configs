@@ -289,3 +289,32 @@
         global: true
         state: present
       become: yes
+
+    - name: install ZapZap (WhatsApp Client)
+      community.general.flatpak:
+        name: com.rtosta.zapzap
+        remote: flathub
+        state: present
+
+    - name: add PWAsForFirefox repository (Packagecloud)
+      ansible.builtin.yum_repository:
+        name: firefoxpwa
+        description: FirefoxPWA Repository
+        baseurl: https://packagecloud.io/filips/FirefoxPWA/rpm_any/rpm_any/$basearch
+        gpgkey: https://packagecloud.io/filips/FirefoxPWA/gpgkey
+        repo_gpgcheck: yes
+        gpgcheck: no
+        enabled: yes
+        state: present
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: install FirefoxPWA native host
+      ansible.builtin.dnf5:
+        name: firefoxpwa
+        state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
