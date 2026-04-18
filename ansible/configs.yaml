@@ -227,7 +227,9 @@
               }
             }
           ]
-      notify: restart Wireplumber
+      notify:
+        - restart pipewire
+        - restart wireplumber
 
   handlers:
     - name: restart NetworkManager
@@ -236,10 +238,22 @@
         state: restarted
       become: yes
 
-    - name: restart Wireplumber
-      ansible.builtin.service:
-        name:
-          - wireplumber
-          - pipewire
+    - name: restart pipewire
+      ansible.builtin.systemd:
+        name: pipewire
         state: restarted
+        scope: user
+        daemon_reload: yes
       become: no
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ ansible_user_uid }}"
+
+    - name: restart wireplumber
+      ansible.builtin.systemd:
+        name: wireplumber
+        state: restarted
+        scope: user
+        daemon_reload: yes
+      become: no
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ ansible_user_uid }}"
