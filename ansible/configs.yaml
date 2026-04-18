@@ -200,9 +200,46 @@
         append: yes
       become: yes
 
+    - name: create wireplumber.conf.d directory
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/.config/wireplumber/wireplumber.conf.d"
+        state: directory
+        owner: "{{ ansible_userd }}"
+        group: "{{ ansible_user_gid }}"
+        mode: "0700"
+
+    - name: set Wireplumber settings for Logitech C920 microphone
+      ansible.builtin.copy:
+        dest: /home/{{ ansible_user }}/.config/wireplumber/wireplumber.conf.d/51-c920-mic.conf
+        mode: "0644"
+        content: |
+          monitor.alsa.rules =[
+            {
+              matches =[
+                {
+                  "node.name" = "~alsa_input.usb-046d_HD_Pro_Webcam_C920.*"
+                }
+              ]
+              actions = {
+                update-props = {
+                  "audio.rate" = 16000
+                }
+              }
+            }
+          ]
+      notify: restart Wireplumber
+
   handlers:
     - name: restart NetworkManager
       ansible.builtin.service:
         name: NetworkManager
         state: restarted
       become: yes
+
+    - name: restart Wireplumber
+      ansible.builtin.service:
+        name:
+          - wireplumber
+          - pipewire
+        state: restarted
+      become: no
