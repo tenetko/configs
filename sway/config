@@ -158,8 +158,7 @@ before-sleep '$screenlock'
 
 exec_always ~/.config/sway/rotate_wallpaper.sh
 
-# For Zoom screen sharing
-exec sh -c 'dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway GBM_BACKEND __GLX_VENDOR_LIBRARY_NAME WLR_NO_HARDWARE_CURSORS && systemctl --user stop xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk && systemctl --user start xdg-desktop-portal'
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store
