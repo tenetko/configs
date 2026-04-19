@@ -43,19 +43,7 @@
         path: /etc/environment
         marker: "# {mark} ANSIBLE MANAGED BLOCK - NVIDIA"
         block: |
-          # Hardware cursors sometimes disappear on NVIDIA/Wayland.
-          # If the cursor is invisible, keep this enabled.
-          WLR_NO_HARDWARE_CURSORS=0
-
-          # Force apps to use Wayland backend
-          MOZ_ENABLE_WAYLAND=1
-          QT_QPA_PLATFORM=wayland
-
-          # NVIDIA specific:
-          LIBVA_DRIVER_NAME=nvidia
-          XDG_SESSION_TYPE=wayland
-          GBM_BACKEND=nvidia-drm
-          __GLX_VENDOR_LIBRARY_NAME=nvidia
+          MOZ_ENABLE_WAYLAND=0
 
   handlers:
     - name: wait for akmod
