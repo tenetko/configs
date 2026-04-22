@@ -17,7 +17,6 @@ input * xkb_numlock enable
 
 for_window [app_id="org.speedcrunch.SpeedCrunch"] {
     floating enable
-    move position center
     move scratchpad
 }
 
@@ -74,10 +73,11 @@ bindsym --to-code $mod+f fullscreen
 bindsym --to-code $mod+Shift+space floating toggle
 bindsym --to-code $mod+space focus mode_toggle
 bindsym --to-code $mod+a focus parent
+bindsym --to-code $mod+c exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
 bindsym --to-code $mod+Shift+Backspace move scratchpad
 bindsym --to-code $mod+Backspace scratchpad show
-bindsym --to-code $mod+grave [app_id="org.speedcrunch.SpeedCrunch"] scratchpad show
-bindsym --to-code $mod+c exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
+bindsym --to-code $mod+grave [app_id="org.speedcrunch.SpeedCrunch"] scratchpad show; [app_id="org.speedcrunch.SpeedCrunch"] resize set 40 ppt 100 ppt; [app_id="org.speedcrunch.SpeedCrunch"] move position 60 ppt 0 ppt
+
 
 mode "resize" {
     bindsym $left resize shrink width 10px
