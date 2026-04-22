@@ -107,6 +107,7 @@
       - ffmpegthumbnailer
       - fuse-zip
       - git
+      - git-delta
       - glances
       - highlight
       - htop
@@ -137,8 +138,8 @@
       - unrar
       - unzip
       - vifm
-      - vim-enhanced
-      - vimiv-qt
+      - vim-enhanced # just in case neovim configuration breaks
+      - vimiv-qt # image viewer similar to qimgv
       - wl-clipboard
       - zsh
       - zsh-autosuggestions

@@ -42,6 +42,7 @@ fi
 # -- Aliases
 alias vi='nvim'
 alias vim='nvim'
+alias vimdiff='nvim -d'
 alias di='docker image'
 alias dc='docker container'
 alias ll='ls -lah'
