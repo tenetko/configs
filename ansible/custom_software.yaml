@@ -319,3 +319,15 @@
         extra_opts:
           - kubens
       become: yes
+
+    - name: get list of current Kubernetes contexts
+      ansible.builtin.command: kubectl config get-contexts -o name
+      register: kube_contexts
+      changed_when: false
+      ignore_errors: yes
+
+    - name: rename Kubernetes context to a shorter name
+      ansible.builtin.command: kubectx lizachu=kubernetes-admin@kubernetes
+      when:
+        - kube_contexts.rc == 0
+        - "'kubernetes-admin@kubernetes' in kube_contexts.stdout_lines"
