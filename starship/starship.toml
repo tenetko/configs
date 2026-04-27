@@ -147,7 +147,7 @@ disabled = false
 symbol = "☸"
 style = "bg:sapphire"
 contexts =[
-  { context_pattern = "lizachu.*",  style = "bg:sapphire fg:#784a20" },
+  { context_pattern = "lizachu.*",  style = "bg:sapphire fg:#965320" },
   { context_pattern = "minikube.*", style = "bg:sapphire fg:#0f6e00" },
 ]
 

@@ -36,7 +36,6 @@ if command -v kubectl > /dev/null; then
         kubectl completion zsh > "$HOME/.kube/completion.zsh"
     fi
     source "$HOME/.kube/completion.zsh"
-    alias k='kubectl --kubeconfig ~/.kube/config'
 fi
 
 # -- FZF (Fuzzy Finder)
@@ -58,9 +57,12 @@ export FZF_DEFAULT_OPTS="
 # -- Aliases
 alias dc='docker container'
 alias di='docker image'
+alias dl='docker logs'
+alias k='kubectl'
 alias kx='kubectx'
 alias kns='kubens'
 alias ll='ls -lah'
+alias minikube='KUBECONFIG=~/.kube/minikube-config minikube'
 alias term='kitty &!'
 alias v='vault'
 alias vi='nvim'
@@ -73,6 +75,7 @@ alias yz='yazi'
 # -- Environment
 export VISUAL='nvim'
 export EDITOR='nvim'
+export KUBECONFIG="$HOME/.kube/config:$HOME/.kube/minikube-config"
 
 # -- Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
