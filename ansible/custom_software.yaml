@@ -296,25 +296,26 @@
         remote: flathub
         state: present
 
-    - name: add PWAsForFirefox repository (Packagecloud)
-      ansible.builtin.yum_repository:
-        name: firefoxpwa
-        description: FirefoxPWA Repository
-        baseurl: https://packagecloud.io/filips/FirefoxPWA/rpm_any/rpm_any/$basearch
-        gpgkey: https://packagecloud.io/filips/FirefoxPWA/gpgkey
-        repo_gpgcheck: yes
-        gpgcheck: no
-        enabled: yes
-        state: present
-      become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
+    - name: get latest kubectx/kubens release info
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/ahmetb/kubectx/releases/latest
+        return_content: true
+      register: github_kubectx
 
-    - name: install FirefoxPWA native host
-      ansible.builtin.dnf5:
-        name: firefoxpwa
-        state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
+    - name: install kubectx binary from GitHub
+      ansible.builtin.unarchive:
+        src: "https://github.com/ahmetb/kubectx/releases/download/{{ github_kubectx.json.tag_name }}/kubectx_{{ github_kubectx.json.tag_name }}_linux_x86_64.tar.gz"
+        dest: /usr/local/bin/
+        remote_src: yes
+        extra_opts:
+          - kubectx
+      become: yes
+
+    - name: install kubens binary from GitHub
+      ansible.builtin.unarchive:
+        src: "https://github.com/ahmetb/kubectx/releases/download/{{ github_kubectx.json.tag_name }}/kubens_{{ github_kubectx.json.tag_name }}_linux_x86_64.tar.gz"
+        dest: /usr/local/bin/
+        remote_src: yes
+        extra_opts:
+          - kubens
+      become: yes

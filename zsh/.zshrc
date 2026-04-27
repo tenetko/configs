@@ -39,17 +39,35 @@ if command -v kubectl > /dev/null; then
     alias k='kubectl --kubeconfig ~/.kube/config'
 fi
 
+# -- FZF (Fuzzy Finder)
+eval "$(fzf --zsh)"
+
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+export FZF_ALT_C_OPTS="--preview 'ls -la --color=always {} | head -200'"
+
+export FZF_DEFAULT_OPTS="
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
+--color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
+"
+
 # -- Aliases
+alias dc='docker container'
+alias di='docker image'
+alias kx='kubectx'
+alias kns='kubens'
+alias ll='ls -lah'
+alias term='kitty &!'
+alias v='vault'
 alias vi='nvim'
 alias vim='nvim'
 alias vimdiff='nvim -d'
-alias di='docker image'
-alias dc='docker container'
-alias ll='ls -lah'
-alias term='kitty &!'
 alias xc='wl-copy'
 alias xp='wl-paste'
-alias v='vault'
 alias yz='yazi'
 
 # -- Environment

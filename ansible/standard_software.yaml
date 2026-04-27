@@ -98,6 +98,7 @@
       - adwaita-icon-theme
       - ansible
       - aria2
+      - bat
       - bind-utils
       - brightnessctl
       - calibre
@@ -106,6 +107,7 @@
       - fd-find
       - ffmpegthumbnailer
       - fuse-zip
+      - fzf
       - git
       - git-delta
       - glances
@@ -130,6 +132,7 @@
       - poppler-utils
       - procps-ng
       - pulseaudio-utils
+      - pwgen
       - ripgrep
       - rsync
       - sshpass
