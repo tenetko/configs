@@ -136,6 +136,7 @@
       - ripgrep
       - rsync
       - sshpass
+      - telnet
       - traceroute
       - tree
       - unrar

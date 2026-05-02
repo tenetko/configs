@@ -1,0 +1,28 @@
+---
+- name: install tools and source codes for fooocus
+  hosts: new_installation
+  become: yes
+
+  vars:
+    rpmfusion_free: "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+    rpmfusion_nonfree: "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+
+    tools:
+      - bzip2-devel
+      - libffi-devel
+      - openssl-devel
+      - readline-devel
+      - sqlite
+      - sqlite-devel
+      - tk-devel
+      - xz-devel
+      - zlib-devel
+
+  tasks:
+    - name: install source codes for libs
+      ansible.builtin.dnf5:
+        name: "{{ tools }}"
+        state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
