@@ -7,6 +7,7 @@
       - openpyxl
       - pandas
       - poetry-dotenv-plugin
+      - pycryptodome
       - python-dotenv
 
   tasks:
