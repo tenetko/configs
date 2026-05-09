@@ -11,6 +11,7 @@ ip("192.168.0.0/16", "172.16.0.0/12", "10.0.0.0/8", "127.0.0.0/8", "::1/128") ->
 domain(domain: localhost, domain: cluster.local) -> direct
 
 domain(contains: ".ru") -> direct
+domain(contains: "yandex.cloud") -> direct
 
 domain(domain: yandex.com, domain: yandex.net, domain: vk.com, domain: tbank.ru) -> direct
 
