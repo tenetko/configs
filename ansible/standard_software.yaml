@@ -60,6 +60,7 @@
       - libvirt-client
       - libvirt-daemon-config-network
       - libvirt-daemon-kvm
+      - lpadmin
       - make
       - meson # to build C++ projects
       - ninja-build # to build C++ projects
