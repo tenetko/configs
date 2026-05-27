@@ -97,6 +97,12 @@
         dest: "/home/{{ ansible_user }}/.config/imv"
         state: link
 
+    - name: create a link to kanshi config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/kanshi"
+        dest: "/home/{{ ansible_user }}/.config/kanshi"
+        state: link
+
     - name: check if /etc/keyd exists
       ansible.builtin.stat:
         path: /etc/keyd

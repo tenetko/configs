@@ -77,6 +77,7 @@ bindsym --to-code $mod+c exec cliphist list | fuzzel --dmenu | cliphist decode |
 bindsym --to-code $mod+Shift+Backspace move scratchpad
 bindsym --to-code $mod+Backspace scratchpad show
 bindsym --to-code $mod+grave [app_id="org.speedcrunch.SpeedCrunch"] scratchpad show; [app_id="org.speedcrunch.SpeedCrunch"] resize set 40 ppt 100 ppt; [app_id="org.speedcrunch.SpeedCrunch"] move position 60 ppt 0 ppt
+bindsym --to-code $mod+Shift+m move workspace to output next
 
 
 mode "resize" {
@@ -197,6 +198,8 @@ exec brave-browser
 exec Telegram
 exec thunderbird
 exec speedcrunch
+
+exec_always pkill kanshi; kanshi &
 
 include /etc/sway/config.d/*
 exec_always "systemctl --user import-environment WAITING_FOR_WAYLAND_DISPLAY"
