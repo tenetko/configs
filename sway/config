@@ -102,7 +102,8 @@ bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5%
 bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle
 # bindsym Print exec grim -g "$(slurp)" - | swappy -f -
-bindsym $mod+Shift+s exec grim -g "$(slurp)" - | swappy -f -
+bindsym --to-code $mod+Shift+s exec grim -g "$(slurp)" - | swappy -f -
+
 bindsym Control+Alt+Shift+8 input "type:keyboard" xkb_switch_layout next
 bindsym Control+Alt+Shift+9 exec ~/.config/sway/switch_layout_group.sh
 
@@ -146,6 +147,7 @@ input type:keyboard {
     repeat_rate 30
 }
 
+exec_always pkill kanshi; kanshi &
 exec_always ~/.config/sway/layout_manager.sh
 exec_always sh -c "sleep 1 && echo 'es' > /tmp/sway_layout_group_state && ~/.config/sway/switch_layout_group.sh"
 
@@ -174,7 +176,8 @@ timeout 600 'swaymsg "output * power off"' \
 resume 'swaymsg "output * power on"' \
 before-sleep '$screenlock'
 
-exec_always ~/.config/sway/rotate_wallpaper.sh
+# exec_always ~/.config/sway/rotate_wallpaper.sh
+exec_always ~/.config/sway/rotate_wallpaper_awww.sh
 
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
@@ -184,22 +187,24 @@ exec sway-audio-idle-inhibit
 
 assign [app_id="kitty_startup"] workspace number 1
 assign [class="org.mozilla.firefox"] workspace number 2
+assign [app_id="org.mozilla.firefox"] workspace number 2
 assign [app_id="google-chrome"] workspace number 3
+assign [app_id="slack"] workspace number 4
 assign [app_id="Slack"] workspace number 4
 assign [app_id="brave-browser"] workspace number 6
 assign [app_id="org.telegram.desktop"] workspace number 9
 assign [class="net.thunderbird.Thunderbird"] workspace number 12
+assign [app_id="net.thunderbird.Thunderbird"] workspace number 12
 
-exec kitty --class="kitty_startup"
-exec firefox
-exec google-chrome
-exec slack
-exec brave-browser 
-exec Telegram
-exec thunderbird
-exec speedcrunch
+exec sh -c "sleep 3 && kitty --class='kitty_startup'"
+exec sh -c "sleep 3 && firefox"
+exec sh -c "sleep 3 && google-chrome"
+exec sh -c "sleep 3 && slack"
+exec sh -c "sleep 3 && brave-browser"
+exec sh -c "sleep 3 && Telegram"
+exec sh -c "sleep 3 && thunderbird"
+exec sh -c "sleep 3 && speedcrunch"
 
-exec_always pkill kanshi; kanshi &
 
 include /etc/sway/config.d/*
 exec_always "systemctl --user import-environment WAITING_FOR_WAYLAND_DISPLAY"

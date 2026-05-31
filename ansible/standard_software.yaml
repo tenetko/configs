@@ -45,6 +45,7 @@
       - alacritty
       - android-file-transfer
       - btrfs-progs
+      - cargo # to build Rust projects
       - colordiff
       - cronie
       - cups
@@ -60,11 +61,13 @@
       - libvirt-client
       - libvirt-daemon-config-network
       - libvirt-daemon-kvm
+      - lz4-devel # to build Rust projects
       - kanshi
       - make
       - meson # to build C++ projects
       - ninja-build # to build C++ projects
       - pipewire
+      - pkgconf-pkg-config # to build Rust projects
       - pulseaudio-libs-devel
       - pulseaudio-utils
       - python3-dnf
@@ -76,6 +79,7 @@
       - qt6-qtquickcontrols2
       - qt6-qtshadertools
       - qt6-qtsvg
+      - rust # to build Rust projects
       - screen
       - sddm
       - sddm-themes

@@ -22,7 +22,7 @@
 
     - name: enable hyprlock COPR repository
       community.general.copr:
-        name: solopasha/hyprland
+        name: lionheartp/Hyprland
         state: enabled
       environment:
         http_proxy: http://127.0.0.1:8888
@@ -36,12 +36,12 @@
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
 
-    - name: cron job for wallpaper
-      ansible.builtin.cron:
-        name: "rotate wallpaper"
-        minute: "*/10"
-        job: "/home/{{ ansible_user }}/.config/sway/rotate_wallpaper.sh"
-      become: no
+    # - name: cron job for wallpaper
+    #   ansible.builtin.cron:
+    #     name: "rotate wallpaper"
+    #     minute: "*/10"
+    #     job: "/home/{{ ansible_user }}/.config/sway/rotate_wallpaper.sh"
+    #   become: no
 
     - name: clone sway-audio-idle-inhibit
       ansible.builtin.git:
@@ -62,4 +62,32 @@
     - name: cleanup build directory
       ansible.builtin.file:
         path: /tmp/sway-audio-idle-inhibit
+        state: absent
+
+    - name: clone awww
+      ansible.builtin.git:
+        repo: https://codeberg.org/LGFae/awww
+        dest: /tmp/awww
+        version: main
+        force: yes
+
+    - name: build awww
+      ansible.builtin.shell: |
+        cargo build --release
+      args:
+        chdir: /tmp/awww
+
+    - name: install awww
+      ansible.builtin.copy:
+        src: "/tmp/awww/target/release/{{ item }}"
+        dest: /usr/local/bin/{{ item }}
+        remote_src: yes
+        mode: "0755"
+      loop:
+        - awww
+        - awww-daemon
+
+    - name: cleanup build directory
+      ansible.builtin.file:
+        path: /tmp/awww
         state: absent
