@@ -128,7 +128,7 @@
       when: keyd.stat.isdir is defined and keyd.stat.isdir
 
     - name: deploy Keyd configuration
-      ansible.builtin.file:
+      ansible.builtin.copy:
         src: /home/{{ ansible_user }}/configs/keyd
         dest: /etc/keyd/
         owner: root
