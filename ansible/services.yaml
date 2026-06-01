@@ -16,6 +16,11 @@
         state: started
         enabled: yes
 
+    - name: remove display manager symlink
+      ansible.builtin.file:
+        path: /etc/systemd/system/display-manager.service
+        state: absent
+
     # - name: enable and start sddm daemon
     #   ansible.builtin.service:
     #     name: sddm

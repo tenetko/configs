@@ -85,25 +85,20 @@
         dest: "/home/{{ ansible_user }}/.config/gammastep"
         state: link
 
-    - name: check if /etc/greetd exists
-      ansible.builtin.stat:
-        path: /etc/greetd
-      register: greetd
-
-    - name: delete /etc/greetd only if it is a directory and not a symlink
+    - name: ensure /etc/greetd directory exists
       ansible.builtin.file:
         path: /etc/greetd
-        state: absent
+        state: directory
+        mode: "0755"
       become: yes
-      when: greetd.stat.isdir is defined and greetd.stat.isdir
 
-    - name: create a link to Greetd config
-      ansible.builtin.file:
-        src: "/home/{{ ansible_user }}/configs/greetd"
-        dest: /etc/greetd
+    - name: deploy Greetd configuration
+      ansible.builtin.copy:
+        src: /home/{{ ansible_user }}/configs/greetd/
+        dest: /etc/greetd/
         owner: root
         group: root
-        state: link
+        mode: "0644"
       become: yes
 
     - name: create a link to hyprlock config
@@ -124,25 +119,21 @@
         dest: "/home/{{ ansible_user }}/.config/kanshi"
         state: link
 
-    - name: check if /etc/keyd exists
-      ansible.builtin.stat:
-        path: /etc/keyd
-      register: keyd
-
-    - name: delete /etc/keyd only if it is a directory and not a symlink
+    - name: ensure /etc/keyd directory exists
       ansible.builtin.file:
         path: /etc/keyd
-        state: absent
+        state: directory
+        mode: "0755"
       become: yes
       when: keyd.stat.isdir is defined and keyd.stat.isdir
 
-    - name: create a link to Keyd config
+    - name: deploy Keyd configuration
       ansible.builtin.file:
-        src: "/home/{{ ansible_user }}/configs/keyd"
-        dest: /etc/keyd
+        src: /home/{{ ansible_user }}/configs/keyd
+        dest: /etc/keyd/
         owner: root
         group: root
-        state: link
+        mode: "0644"
       become: yes
 
     - name: create a link to Kitty config
