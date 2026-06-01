@@ -129,7 +129,7 @@
 
     - name: deploy Keyd configuration
       ansible.builtin.copy:
-        src: /home/{{ ansible_user }}/configs/keyd
+        src: /home/{{ ansible_user }}/configs/keyd/
         dest: /etc/keyd/
         owner: root
         group: root
