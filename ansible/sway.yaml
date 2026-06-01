@@ -6,6 +6,7 @@
   vars:
     sway:
       - fuzzel
+      - greetd
       - swappy
       - sway
       - swaybg
@@ -91,3 +92,36 @@
       ansible.builtin.file:
         path: /tmp/awww
         state: absent
+
+    - name: Ensure systemd logind drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/systemd/logind.conf.d
+        state: directory
+        mode: "0755"
+
+    - name: Configure systemd to ignore lid switch when HDMI is connected
+      ansible.builtin.copy:
+        dest: /etc/systemd/logind.conf.d/10-lid-switch.conf
+        content: |
+          [Login]
+          HandleLidSwitchDocked=ignore
+          # If it still sleeps with HDMI plugged in, uncomment the line below to force it globally:
+          # HandleLidSwitch=ignore
+      notify: restart systemd-logind
+
+    - name: enable mystical-devil/ReGreet COPR repository
+      community.general.copr:
+        name: mystical-devil/ReGreet
+        state: enabled
+
+    - name: install ReGreet
+      ansible.builtin.dnf5:
+        name:
+          - ReGreet
+        state: present
+
+  handlers:
+    - name: restart systemd-logind
+      ansible.builtin.systemd:
+        name: systemd-logind
+        state: restarted

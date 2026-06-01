@@ -1,0 +1,9 @@
+[background]
+path = "/home/unclemisha/megasync/wallpapers/abkhazia/hong kong islands/2789__1428846917.jpg"
+fit = "Cover"
+
+[GTK]
+theme_name = "catppuccin-mocha-peach-standard+default"
+icon_theme_name = "Adwaita"
+cursor_theme_name = "Adwaita"
+font_name = "Hack 12"

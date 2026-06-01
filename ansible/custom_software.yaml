@@ -181,15 +181,27 @@
 
       when: not sugar_candy.stat.exists
 
-    - name: check if Catppuccin theme is installed
+    - name: check if Catppuccin theme for SDDM is installed
       ansible.builtin.stat:
         path: /usr/share/sddm/themes/catppuccin-mocha
       register: catppuccin
 
-    - name: download Catppuccin SDDM
+    - name: download Catppuccin theme for SDDM
       ansible.builtin.unarchive:
         src: https://github.com/catppuccin/sddm/releases/download/v1.0.0/catppuccin-mocha.zip
         dest: /usr/share/sddm/themes
+        remote_src: yes
+      when: not catppuccin.stat.exists
+
+    - name: check if Catppuccin theme for GTK is installed
+      ansible.builtin.stat:
+        path: /usr/share/themes/catppuccin-mocha
+      register: catppuccin
+
+    - name: download Catppuccin theme for GTK
+      ansible.builtin.unarchive:
+        src: https://github.com/catppuccin/gtk/releases/download/v1.0.3/catppuccin-mocha-peach-standard+default.zip
+        dest: /usr/share/themes
         remote_src: yes
       when: not catppuccin.stat.exists
 

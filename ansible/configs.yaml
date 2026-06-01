@@ -85,6 +85,27 @@
         dest: "/home/{{ ansible_user }}/.config/gammastep"
         state: link
 
+    - name: check if /etc/greetd exists
+      ansible.builtin.stat:
+        path: /etc/greetd
+      register: greetd
+
+    - name: delete /etc/greetd only if it is a directory and not a symlink
+      ansible.builtin.file:
+        path: /etc/greetd
+        state: absent
+      become: yes
+      when: greetd.stat.isdir is defined and greetd.stat.isdir
+
+    - name: create a link to Greetd config
+      ansible.builtin.file:
+        src: "/home/{{ ansible_user }}/configs/greetd"
+        dest: /etc/greetd
+        owner: root
+        group: root
+        state: link
+      become: yes
+
     - name: create a link to hyprlock config
       ansible.builtin.file:
         src: "/home/{{ ansible_user }}/configs/hypr"

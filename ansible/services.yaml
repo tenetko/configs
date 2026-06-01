@@ -16,20 +16,26 @@
         state: started
         enabled: yes
 
-    - name: enable and start sddm daemon
-      ansible.builtin.service:
-        name: sddm
-        state: started
-        enabled: yes
+    # - name: enable and start sddm daemon
+    #   ansible.builtin.service:
+    #     name: sddm
+    #     state: started
+    #     enabled: yes
 
-    - name: enable and start transmission daemon
+    - name: enable and start greetd daemon
       ansible.builtin.service:
-        name: transmission-daemon
+        name: greetd
         state: started
         enabled: yes
 
     - name: enable and start libvirt daemon
       ansible.builtin.service:
         name: libvirtd
+        state: started
+        enabled: yes
+
+    - name: enable and start transmission daemon
+      ansible.builtin.service:
+        name: transmission-daemon
         state: started
         enabled: yes
