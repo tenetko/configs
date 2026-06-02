@@ -20,6 +20,11 @@ case "$CURRENT_PAIR" in
   NOTIFY_TEXT="🇺🇸 US / 🇪🇸 ES"
   ;;
 "es")
+  NEW_PAIR="en"
+  LAYOUTS="us"
+  NOTIFY_TEXT="🇺🇸 US"
+  ;;
+"en")
   NEW_PAIR="ru"
   LAYOUTS="us,ru"
   NOTIFY_TEXT="🇺🇸 US / 🇷🇺 RU"
