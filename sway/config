@@ -168,7 +168,7 @@ input type:keyboard {
     repeat_rate 30
 }
 
-exec_always sh -c "sleep 1.5 && ~/.config/sway/restore_layout_group.sh"
+exec_always sh -c "sleep 2 && ~/.config/sway/restore_layout_group.sh"
 exec_always pkill kanshi; kanshi &
 exec_always ~/.config/sway/layout_manager.sh
 exec_always sh -c "sleep 1 && echo 'es' > /tmp/sway_layout_group_state && ~/.config/sway/switch_layout_group.sh"

@@ -137,10 +137,18 @@
             group: root
       when: not cliphist.stat.exists
 
-    - name: install Stig
-      community.general.pipx:
-        name: stig
-      become: no
+    - name: install tremc
+      ansible.builtin.get_url:
+        url: https://github.com/tremc/tremc/raw/refs/heads/master/tremc
+        dest: /usr/local/bin/tremc
+        mode: "0755"
+        owner: root
+        group: root
+      become: yes
+      # Include proxy if GitHub is being blocked or throttled
+      environment:
+        http_proxy: http://127.0.0.1:20172
+        https_proxy: http://127.0.0.1:20172
 
     - name: check if Starship is installed
       ansible.builtin.stat:
