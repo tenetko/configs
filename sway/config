@@ -20,18 +20,18 @@ input * xkb_numlock enable
 #     move scratchpad
 # }
 
-workspace 1 output HDMI-A-1 eDP-1
-workspace 2 output HDMI-A-1 eDP-1
-workspace 3 output HDMI-A-1 eDP-1
-workspace 4 output HDMI-A-1 eDP-1
-workspace 5 output HDMI-A-1 eDP-1
-workspace 6 output HDMI-A-1 eDP-1
-workspace 7 output HDMI-A-1 eDP-1
-workspace 8 output HDMI-A-1 eDP-1
-workspace 9 output HDMI-A-1 eDP-1
-workspace 10 output HDMI-A-1 eDP-1
-workspace 11 output HDMI-A-1 eDP-1
-workspace 12 output HDMI-A-1 eDP-1
+workspace 1 output HDMI-A-1 DP-1 eDP-1
+workspace 2 output HDMI-A-1 DP-1 eDP-1
+workspace 3 output HDMI-A-1 DP-1 eDP-1
+workspace 4 output HDMI-A-1 DP-1 eDP-1
+workspace 5 output HDMI-A-1 DP-1 eDP-1
+workspace 6 output HDMI-A-1 DP-1 eDP-1
+workspace 7 output HDMI-A-1 DP-1 eDP-1
+workspace 8 output HDMI-A-1 DP-1 eDP-1
+workspace 9 output HDMI-A-1 DP-1 eDP-1
+workspace 10 output HDMI-A-1 DP-1 eDP-1
+workspace 11 output HDMI-A-1 DP-1 eDP-1
+workspace 12 output HDMI-A-1 DP-1 eDP-1
 
 # Turn off the laptop screen instantly when the lid is closed
 bindswitch --reload --locked lid:on output eDP-1 disable
@@ -95,6 +95,7 @@ bindsym --to-code $mod+c exec cliphist list | fuzzel --dmenu | cliphist decode |
 bindsym --to-code $mod+Shift+Backspace move scratchpad
 bindsym --to-code $mod+Backspace scratchpad show
 # bindsym --to-code $mod+grave [app_id="org.speedcrunch.SpeedCrunch"] scratchpad show; [app_id="org.speedcrunch.SpeedCrunch"] resize set 40 ppt 100 ppt; [app_id="org.speedcrunch.SpeedCrunch"] move position 60 ppt 0 ppt
+bindsym --to-code $mod+grave exec speedcrunch
 bindsym --to-code $mod+Shift+m move workspace to output next
 
 
