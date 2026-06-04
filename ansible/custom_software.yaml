@@ -351,3 +351,24 @@
       when:
         - kube_contexts.rc == 0
         - "'kubernetes-admin@kubernetes' in kube_contexts.stdout_lines"
+
+    - name: get latest rqbit release information from github
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/ikatson/rqbit/releases/latest
+        return_content: true
+      register: github_rqbit
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: download and install rqbit CLI binary
+      ansible.builtin.get_url:
+        url: "{{ github_rqbit.json.assets | selectattr('name', 'search', '^rqbit-linux-(amd64|x86_64)$') | map(attribute='browser_download_url') | first }}"
+        dest: /usr/local/bin/rqbit
+        mode: "0755"
+        owner: root
+        group: root
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
