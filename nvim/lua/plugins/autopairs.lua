@@ -5,5 +5,8 @@ return {
 
     -- Disable the backtick mapping
     opts.mappings["`"] = false
+    opts.mappings["["] = false
+    opts.mappings['"'] = false
+    opts.mappings["'"] = false
   end,
 }
