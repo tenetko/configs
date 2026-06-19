@@ -138,6 +138,7 @@
       - procps-ng
       - pulseaudio-utils
       - pwgen
+      - qrencode
       - ripgrep
       - rsync
       - sshpass

@@ -372,3 +372,36 @@
       environment:
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
+
+    - name: import Beekeeper Studio GPG key
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://rpm.beekeeperstudio.io/beekeeper.key
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: add Beekeeper Studio repo
+      ansible.builtin.get_url:
+        url: https://rpm.beekeeperstudio.io/beekeeper-studio.repo
+        dest: /etc/yum.repos.d/beekeeper-studio.repo
+        mode: "0644"
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: install Beekeeper Studio
+      ansible.builtin.dnf5:
+        name: beekeeper-studio
+        state: present
+
+    - name: install Beekeeper Studio
+      ansible.builtin.dnf5:
+        name: beekeeper-studio
+        state: present
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
