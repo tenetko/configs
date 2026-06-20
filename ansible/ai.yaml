@@ -4,9 +4,6 @@
   become: yes
 
   vars:
-    rpmfusion_free: "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
-    rpmfusion_nonfree: "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
-
     tools:
       - bzip2-devel
       - libffi-devel

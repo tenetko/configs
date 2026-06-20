@@ -4,8 +4,8 @@
   become: yes
 
   vars:
-    rpmfusion_free: "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
-    rpmfusion_nonfree: "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+    rpmfusion_free: "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+    rpmfusion_nonfree: "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
 
     apps:
       - blender
@@ -64,10 +64,12 @@
       - lz4-devel # to build Rust projects
       - kanshi
       - make
+      - mariadb
       - meson # to build C++ projects
       - ninja-build # to build C++ projects
       - pipewire
       - pkgconf-pkg-config # to build Rust projects
+      - postgresql
       - pulseaudio-libs-devel
       - pulseaudio-utils
       - python3-dnf

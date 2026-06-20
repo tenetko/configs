@@ -88,6 +88,7 @@ fi
 # -- Paths
 [ -d "$HOME/.local/bin" ] && export PATH="$HOME/.local/bin:$PATH"
 [ -d "$HOME/go/bin" ] && export PATH="$HOME/go/bin:$PATH"
+[ -d "/opt/mssql-tools18/bin" ] && export PATH="$PATH:/opt/mssql-tools18/bin"
 
 # -- Envman
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

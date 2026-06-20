@@ -165,3 +165,18 @@
       environment:
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
+
+    - name: create a link from mariadb to mysql
+      ansible.builtin.file:
+        src: /usr/bin/mariadb
+        dest: /home/{{ ansible_user }}/.local/bin/mysql
+        state: link
+
+    - name: create a wrapper for sqlcmd
+      ansible.builtin.copy:
+        dest: /home/{{ ansible_user }}/.local/bin/sqlcmd
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          # Intercept Dadbod's sqlcmd call and force Trust Server Certificate (-C)
+          /opt/mssql-tools18/bin/sqlcmd -C -No "$@"

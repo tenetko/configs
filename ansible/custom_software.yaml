@@ -52,7 +52,6 @@
         enabled: yes
         gpgcheck: no
         repo_gpgcheck: no
-        sslcacert: /etc/pki/tls/certs/ca-bundle.crt
         state: present
 
     - name: install Slack
@@ -405,3 +404,27 @@
       environment:
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
+
+    - name: add Microsoft RedHat repository
+      ansible.builtin.yum_repository:
+        name: packages-microsoft-com-prod
+        description: Microsoft SQL Server Tools
+        baseurl: https://packages.microsoft.com/rhel/9/prod/
+        gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+        gpgcheck: yes
+        enabled: yes
+        state: present
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: install MS SQL CLI tools (sqlcmd)
+      ansible.builtin.dnf5:
+        name: mssql-tools18
+        state: present
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+        ACCEPT_EULA: "Y"
