@@ -1,0 +1,60 @@
+---
+- name: install Virtualbox
+  hosts: new_installation
+  become: yes
+  tasks:
+    - name: install VirtualBox and kernel modules
+      ansible.builtin.dnf5:
+        name:
+          - VirtualBox
+          - akmod-VirtualBox
+        state: present
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: add user to vboxusers group (for USB passthrough)
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: vboxusers
+        append: yes
+
+    - name: configure VirtualBox Extension Pack
+      block:
+        - name: get installed VirtualBox version
+          ansible.builtin.command: VBoxManage --version
+          register: vbox_v_raw
+          changed_when: false
+
+        - name: parse VirtualBox version
+          ansible.builtin.set_fact:
+            vbox_ver: "{{ vbox_v_raw.stdout.split('r')[0] }}"
+
+        - name: check installed Extension Packs
+          ansible.builtin.command: VBoxManage list extpacks
+          register: vbox_ext_list
+          changed_when: false
+          become: yes
+
+        - name: download VirtualBox Extension Pack
+          ansible.builtin.get_url:
+            url: "https://download.virtualbox.org/virtualbox/{{ vbox_ver }}/Oracle_VM_VirtualBox_Extension_Pack-{{ vbox_ver }}.vbox-extpack"
+            dest: "/tmp/Oracle_ExtPack.vbox-extpack"
+            mode: "0644"
+          when: vbox_ver not in vbox_ext_list.stdout
+
+        - name: install VirtualBox Extension Pack
+          ansible.builtin.shell: |
+            # Extract the license text from the archive and calculate its SHA256 hash
+            LICENSE_HASH=$(tar xqOf /tmp/Oracle_ExtPack.vbox-extpack ExtPack-license.txt | sha256sum | awk '{print $1}')
+
+            # Pass the hash to VBoxManage to silently accept the EULA
+            VBoxManage extpack install --replace /tmp/Oracle_ExtPack.vbox-extpack --accept-license=$LICENSE_HASH
+          become: yes
+          when: vbox_ver not in vbox_ext_list.stdout
+
+        - name: remove downloaded Extension Pack file
+          ansible.builtin.file:
+            path: /tmp/Oracle_ExtPack.vbox-extpack
+            state: absent
+          when: vbox_ver not in vbox_ext_list.stdout
