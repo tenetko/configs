@@ -192,8 +192,8 @@
       ansible.builtin.file:
         path: "/home/{{ ansible_user }}/megasync"
         state: directory
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_gid }}"
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_gid'] }}"
         mode: "0700"
 
     - name: set zsh as default shell
@@ -213,7 +213,7 @@
 
     - name: add user to libvirt group
       ansible.builtin.user:
-        name: "{{ ansible_user_id }}"
+        name: "{{ ansible_facts['user_id'] }}"
         groups: libvirt
         append: yes
       become: yes
@@ -222,8 +222,8 @@
       ansible.builtin.file:
         path: "/home/{{ ansible_user }}/.config/wireplumber/wireplumber.conf.d"
         state: directory
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_gid }}"
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_gid'] }}"
         mode: "0700"
 
     - name: set Wireplumber settings for Logitech C920 microphone
@@ -253,8 +253,8 @@
       ansible.builtin.file:
         path: "/home/{{ ansible_user }}/.config/xdg-desktop-portal"
         state: directory
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_gid }}"
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_gid'] }}"
         mode: "0700"
 
     - name: create portals.conf config
