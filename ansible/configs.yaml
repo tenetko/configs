@@ -267,6 +267,30 @@
           org.freedesktop.impl.portal.ScreenCast=wlr
           org.freedesktop.impl.portal.Screenshot=wlr
 
+    - name: disable systemd-resolved and hand DNS to NetworkManager
+      block:
+        - name: stop and disable systemd-resolved
+          ansible.builtin.systemd:
+            name: systemd-resolved
+            state: stopped
+            enabled: no
+
+        - name: remove systemd-resolved symlink
+          ansible.builtin.file:
+            path: /etc/resolv.conf
+            state: absent
+
+        - name: configure NetworkManager to use default DNS handling
+          community.general.ini_file:
+            path: /etc/NetworkManager/NetworkManager.conf
+            section: main
+            option: dns
+            value: default
+            mode: "0644"
+
+      become: yes
+      notify: restart NetworkManager
+
   handlers:
     - name: restart NetworkManager
       ansible.builtin.service:
