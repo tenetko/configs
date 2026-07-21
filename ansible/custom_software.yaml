@@ -302,13 +302,6 @@
       become: yes
       when: not argocd.stat.exists
 
-    - name: install repomix tool
-      community.general.npm:
-        name: repomix
-        global: true
-        state: present
-      become: yes
-
     - name: install ZapZap (WhatsApp Client)
       community.general.flatpak:
         name: com.rtosta.zapzap

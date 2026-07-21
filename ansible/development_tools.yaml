@@ -166,11 +166,15 @@
         http_proxy: http://127.0.0.1:8888
         https_proxy: http://127.0.0.1:8888
 
-    - name: create a link from mariadb to mysql
-      ansible.builtin.file:
-        src: /usr/bin/mariadb
-        dest: /home/{{ ansible_user }}/.local/bin/mysql
-        state: link
+    - name: create wrapper script for MySQL (bypass MariaDB warning)
+      ansible.builtin.copy:
+        dest: "/home/{{ ansible_user }}/.local/bin/mysql"
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          # Pass all arguments directly to mariadb to avoid the deprecation warning
+          exec /usr/bin/mariadb "$@"
+      become: no
 
     - name: create a wrapper for sqlcmd
       ansible.builtin.copy:
@@ -180,3 +184,33 @@
           #!/bin/bash
           # Intercept Dadbod's sqlcmd call and force Trust Server Certificate (-C)
           /opt/mssql-tools18/bin/sqlcmd -C -No "$@"
+
+    - name: install repomix tool
+      community.general.npm:
+        name: repomix
+        global: true
+        state: present
+      become: yes
+
+    - name: add Claude Code RPM repository
+      ansible.builtin.yum_repository:
+        name: claude-code
+        description: Claude Code Official Repo
+        baseurl: https://downloads.claude.ai/claude-code/rpm/stable
+        enabled: yes
+        gpgcheck: yes
+        gpgkey: https://downloads.claude.ai/keys/claude-code.asc
+        state: present
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
+
+    - name: install Claude Code
+      ansible.builtin.dnf5:
+        name: claude-code
+        state: present
+      become: yes
+      environment:
+        http_proxy: http://127.0.0.1:8888
+        https_proxy: http://127.0.0.1:8888
