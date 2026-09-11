@@ -407,6 +407,7 @@
         gpgcheck: yes
         enabled: yes
         state: present
+        exclude: "moby* docker* containernetworking-plugins"
       become: yes
       environment:
         http_proxy: http://127.0.0.1:8888
