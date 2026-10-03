@@ -1,0 +1,219 @@
+---
+- name: Go toolchain and development tools
+  hosts: new_installation
+
+  vars:
+    go_tarball: "go{{ go_version }}.linux-amd64.tar.gz"
+    go_dist_dir: "/usr/local/go-{{ go_version }}"
+    go_exe: "/usr/local/go-{{ go_version }}/bin/go"
+    go_tools_prefix: "{{ go_tools_root }}/go{{ go_version }}"
+
+  tasks:
+    # --- Go
+    - name: remove distro Go (we manage the toolchain ourselves)
+      ansible.builtin.dnf5:
+        name: golang
+        state: absent
+        autoremove: true
+      become: true
+      environment: "{{ proxy_env }}"
+
+    - name: download Go {{ go_version }} tarball
+      ansible.builtin.get_url:
+        url: "https://go.dev/dl/{{ go_tarball }}"
+        dest: "/tmp/{{ go_tarball }}"
+        checksum: "sha256:{{ go_sha256 }}"
+        mode: "0644"
+      environment: "{{ proxy_env }}"
+
+    - name: create versioned Go directory
+      ansible.builtin.file:
+        path: "{{ go_dist_dir }}"
+        state: directory
+        mode: "0755"
+      become: true
+
+    - name: unpack Go {{ go_version }}
+      ansible.builtin.unarchive:
+        src: "/tmp/{{ go_tarball }}"
+        dest: "{{ go_dist_dir }}"
+        remote_src: true
+        extra_opts: ["--strip-components=1"]
+        creates: "{{ go_exe }}"
+      become: true
+
+    - name: point {{ go_root }} at Go {{ go_version }}
+      ansible.builtin.file:
+        src: "{{ go_dist_dir }}"
+        dest: "{{ go_root }}"
+        state: link
+        force: true
+      become: true
+
+    # --- tools
+
+    - name: ensure tool directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ go_bin_dir }}"
+        - "{{ go_tools_prefix }}"
+
+    # GOTOOLCHAIN=local pins the compiler.
+    # Without it, a tool whose go.mod requires a newer Go
+    # silently downloads a different toolchain
+    # and the "built with {{ go_version }}" guarantee quietly evaporates.
+    - name: install pinned Go tools
+      ansible.builtin.command:
+        cmd: "{{ go_exe }} install {{ item.module }}@{{ item.version }}"
+        creates: "{{ go_tools_prefix }}/{{ item.name }}-{{ item.version }}/{{ item.name }}"
+      environment: "{{ proxy_env | combine({
+        'GOBIN': go_tools_prefix ~ '/' ~ item.name ~ '-' ~ item.version,
+        'GOTOOLCHAIN': 'local',
+        'PATH': go_root ~ '/bin:' ~ ansible_facts['env']['PATH'],
+        }) }}"
+      loop: "{{ go_tools }}"
+      loop_control:
+        label: "{{ item.name }}@{{ item.version }}"
+
+    - name: link Go tools into {{ go_bin_dir }}
+      ansible.builtin.file:
+        src: "{{ go_tools_prefix }}/{{ item.name }}-{{ item.version }}/{{ item.name }}"
+        dest: "{{ go_bin_dir }}/{{ item.name }}"
+        state: link
+        force: true
+      loop: "{{ go_tools }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: verify each tool built into its versioned GOBIN
+      ansible.builtin.stat:
+        path: "{{ go_tools_prefix }}/{{ item.name }}-{{ item.version }}/{{ item.name }}"
+      register: go_tool_builds
+      loop: "{{ go_tools }}"
+      loop_control:
+        label: "{{ item.name }}@{{ item.version }}"
+
+    - name: fail if a tool did not build into its expected path
+      ansible.builtin.assert:
+        that: go_tool_builds.results | rejectattr('stat.exists') | list | length == 0
+        fail_msg: >-
+          Built but not found where expected:
+          {{ go_tool_builds.results | rejectattr('stat.exists')
+            | map(attribute='item') | map(attribute='name') | join(', ') }}
+
+    # --- golangci-lint
+    # Upstream discourages `go install` for golangci-lint:
+    # it compiles rather than installs, losing the build metadata
+    # and pinned dependency graph from their release process.
+    # Use the release binary.
+
+    - name: download golangci-lint {{ golangci_lint_version }}
+      ansible.builtin.get_url:
+        url: |
+          https://github.com/golangci/golangci-lint/releases/download/v{{ golangci_lint_version }}/golangci-lint-{{ golangci_lint_version }}-linux-amd64.tar.gz
+        dest: "/tmp/golangci-lint-{{ golangci_lint_version }}.tar.gz"
+        checksum: "sha256:{{ golangci_lint_sha256 }}"
+        mode: "0644"
+      environment: "{{ proxy_env }}"
+
+    - name: unpack golangci-lint {{ golangci_lint_version }}
+      ansible.builtin.unarchive:
+        src: "/tmp/golangci-lint-{{ golangci_lint_version }}.tar.gz"
+        dest: "{{ go_tools_root }}"
+        remote_src: true
+        creates: "{{ go_tools_root }}/golangci-lint-{{ golangci_lint_version }}-linux-amd64/golangci-lint"
+
+    - name: verify golangci-lint binary is present
+      ansible.builtin.stat:
+        path: "{{ go_tools_root }}/golangci-lint-{{ golangci_lint_version }}-linux-amd64/golangci-lint"
+      register: golangci_bin
+
+    - name: fail if golangci-lint did not unpack
+      ansible.builtin.assert:
+        that: golangci_bin.stat.exists
+        fail_msg: >-
+          golangci-lint {{ golangci_lint_version }} was not unpacked —
+          check golangci_lint_sha256 and the release asset name.
+
+    - name: link golangci-lint into {{ go_bin_dir }}
+      ansible.builtin.file:
+        src: "{{ go_tools_root }}/golangci-lint-{{ golangci_lint_version }}-linux-amd64/golangci-lint"
+        dest: "{{ go_bin_dir }}/golangci-lint"
+        state: link
+        force: true
+
+    # --- housekeeping
+    # Optional: reclaim space from superseded toolchains and tool builds.
+    # Comment out if you prefer to keep old versions around.
+
+    - name: find superseded golangci-lint builds
+      ansible.builtin.find:
+        paths: "{{ go_tools_root }}"
+        patterns: "golangci-lint-*"
+        file_type: directory
+        excludes: "golangci-lint-{{ golangci_lint_version }}-linux-amd64"
+        depth: 1
+      register: stale_golangci
+
+    - name: remove superseded golangci-lint builds
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ stale_golangci.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: find superseded Go toolchains
+      ansible.builtin.find:
+        paths: /usr/local
+        patterns: "go-*"
+        file_type: directory
+        excludes: "go-{{ go_version }}"
+        depth: 1
+      register: stale_go_dists
+
+    - name: remove superseded Go toolchains
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ stale_go_dists.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+      become: true
+
+    - name: find superseded tool build directories
+      ansible.builtin.find:
+        paths: "{{ go_tools_root }}"
+        patterns: ['^go[0-9]+\.[0-9]+(\.[0-9]+)?$']
+        use_regex: true
+        excludes: ["^go{{ go_version | regex_escape }}$"]
+        file_type: directory
+        depth: 1
+      register: stale_tool_dirs
+
+    - name: remove superseded tool build directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ stale_tool_dirs.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: verify every managed Go tool resolves to a real binary
+      ansible.builtin.stat:
+        path: "{{ go_bin_dir }}/{{ item }}"
+        follow: true
+      register: managed_tools
+      loop: "{{ (go_tools | map(attribute='name') | list) + ['golangci-lint'] }}"
+
+    - name: fail on any dangling or missing Go tool
+      ansible.builtin.assert:
+        that: managed_tools.results | rejectattr('stat.executable', 'defined') | list | length == 0
+        fail_msg: >-
+          Broken tool links:
+          {{ managed_tools.results | rejectattr('stat.executable', 'defined')
+            | map(attribute='item') | join(', ') }}
+        success_msg: "{{ managed_tools.results | length }} Go tools verified"

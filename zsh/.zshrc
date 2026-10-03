@@ -38,6 +38,9 @@ if command -v kubectl > /dev/null; then
     source "$HOME/.kube/completion.zsh"
 fi
 
+# -- Go
+export GOBIN="$HOME/.local/bin"
+
 # -- FZF (Fuzzy Finder)
 eval "$(fzf --zsh)"
 
@@ -86,8 +89,8 @@ if [ -d "$PYENV_ROOT/bin" ]; then
 fi
 
 # -- Paths
+[ -d "/usr/local/go/bin" ] && export PATH="/usr/local/go/bin:$PATH"
 [ -d "$HOME/.local/bin" ] && export PATH="$HOME/.local/bin:$PATH"
-[ -d "$HOME/go/bin" ] && export PATH="$HOME/go/bin:$PATH"
 [ -d "/opt/mssql-tools18/bin" ] && export PATH="$PATH:/opt/mssql-tools18/bin"
 
 # -- Envman

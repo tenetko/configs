@@ -1,5 +1,51 @@
 ansible_ssh_extra_args: "-R 8888:127.0.0.1:20171"
 
-go_version: 1.25.8
 keyd_version: 2.6.0
 argocd_version: "v3.2.3"
+
+go_root: /usr/local/go
+go_bin_dir: "{{ ansible_facts['env']['HOME'] }}/.local/bin"
+go_tools_root: "{{ ansible_facts['env']['HOME'] }}/.local/share/go-tools"
+
+
+# --- Go paths
+
+proxy_env:
+  http_proxy: http://127.0.0.1:8888
+  https_proxy: http://127.0.0.1:8888
+
+# --- Go toolchain
+# Checksum is the SHA256 of go<version>.linux-amd64.tar.gz,
+# published alongside the download at https://go.dev/dl/# .
+
+go_version: "1.27.1"
+go_sha256: "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445"
+
+
+# --- tools
+# Check current releases before bumping:
+#   dlv       https://github.com/go-delve/delve/releases
+#   goimports https://github.com/golang/tools/releases  (x/tools tags)
+#   gopls     https://github.com/golang/tools/releases  (gopls/vX.Y.Z tags)
+
+go_tools:
+  - name: dlv
+    module: github.com/go-delve/delve/cmd/dlv
+    version: v1.27.2
+
+  - name: goimports
+    module: golang.org/x/tools/cmd/goimports
+    version: v0.51.0
+
+  - name: gopls
+    module: golang.org/x/tools/gopls
+    version: v0.23.0
+
+# --- golangci-lint
+# Handled separately because upstream recommends the release binary
+# over `go install`. Note the module path for v2 includes `/v2/` —
+# the path without it resolves to the final v1.x release.
+# Checksums: golangci-lint-<version>-checksums.txt on the release page.
+
+golangci_lint_version: "2.14.0"
+golangci_lint_sha256: "ab90aeb7b066f92a33415b638a50fe5344bbb75a0d32ad30cc248d88f81032ab"
