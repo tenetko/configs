@@ -1,0 +1,87 @@
+---
+- name: install sing-box
+  hosts: new_installation
+  become: yes
+
+  tasks:
+    - name: add sing-box repository
+      ansible.builtin.yum_repository:
+        name: sing-box
+        description: sing-box
+        baseurl: https://rpm.sagernet.org/
+        gpgcheck: true
+        gpgkey: https://sing-box.app/gpg.key
+        enabled: true
+      environment: "{{ proxy_env }}"
+
+    - name: install sing-box
+      ansible.builtin.dnf5:
+        name: sing-box
+        state: present
+        update_cache: true
+      environment: "{{ proxy_env }}"
+
+    - name: trust sing-box interface
+      ansible.posix.firewalld:
+        zone: trusted
+        source: 172.31.250.0/30
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: ensure /etc/docker directory exists
+      ansible.builtin.file:
+        path: /etc/docker
+        state: directory
+        mode: "0755"
+      become: yes
+
+    - name: add resolvers for Docker
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        mode: "0644"
+        content: |
+          {
+            "dns": ["1.1.1.1", "8.8.8.8"]
+          }
+      become: yes
+      notify: restart Docker
+
+    - name: install Pritunl MTU unit
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/pritunl-mtu@.service
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Set MTU on %i
+          BindsTo=sys-subsystem-net-devices-%i.device
+          After=sys-subsystem-net-devices-%i.device
+
+          [Service]
+          Type=oneshot
+          RemainAfterExit=yes
+          ExecStart=/usr/sbin/ip link set dev %i mtu {{ pritunl_mtu | default(1328) }}
+
+          [Install]
+          WantedBy=sys-subsystem-net-devices-%i.device
+
+    - name: enable MTU unit for tun0
+      ansible.builtin.systemd_service:
+        name: pritunl-mtu@tun0.service
+        enabled: true
+        daemon_reload: true
+
+  handlers:
+    - name: restart sing-box
+      ansible.builtin.systemd_service:
+        name: sing-box
+        state: restarted
+        enabled: true
+        daemon_reload: true
+
+    - name: restart Docker
+      ansible.builtin.systemd_service:
+        name: docker
+        state: restarted
+        enabled: true
+        daemon_reload: true
