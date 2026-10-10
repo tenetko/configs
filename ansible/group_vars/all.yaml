@@ -8,12 +8,6 @@ go_bin_dir: "{{ ansible_facts['env']['HOME'] }}/.local/bin"
 go_tools_root: "{{ ansible_facts['env']['HOME'] }}/.local/share/go-tools"
 
 
-# --- Go paths
-
-proxy_env:
-  http_proxy: http://127.0.0.1:8888
-  https_proxy: http://127.0.0.1:8888
-
 # --- Go toolchain
 # Checksum is the SHA256 of go<version>.linux-amd64.tar.gz,
 # published alongside the download at https://go.dev/dl/# .

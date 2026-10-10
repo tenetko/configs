@@ -12,14 +12,12 @@
         gpgcheck: true
         gpgkey: https://sing-box.app/gpg.key
         enabled: true
-      environment: "{{ proxy_env }}"
 
     - name: install sing-box
       ansible.builtin.dnf5:
         name: sing-box
         state: present
         update_cache: true
-      environment: "{{ proxy_env }}"
 
     - name: trust sing-box interface
       ansible.posix.firewalld:
@@ -70,6 +68,35 @@
         name: pritunl-mtu@tun0.service
         enabled: true
         daemon_reload: true
+
+    - name: ensure /var/lib/sing-box directory exists
+      ansible.builtin.file:
+        path: /var/lib/sing-box
+        state: directory
+        mode: "0755"
+      become: yes
+
+    - name: download geosite files
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/{{ item }}"
+        dest: /var/lib/sing-box/{{ item }}
+        mode: "0644"
+        owner: root
+        group: root
+      loop:
+        - geosite-cn.srs
+        - geosite-category-ru.srs
+
+    - name: download geoip files
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/{{ item }}"
+        dest: /var/lib/sing-box/{{ item }}
+        mode: "0644"
+        owner: root
+        group: root
+      loop:
+        - geoip-cn.srs
+        - geoip-ru.srs
 
   handlers:
     - name: restart sing-box
