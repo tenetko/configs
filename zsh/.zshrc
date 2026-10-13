@@ -22,6 +22,9 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 autoload -Uz compinit
 compinit
 
+# -- Batch rename
+autoload -Uz zmv
+
 # -- Starship 
 if command -v starship > /dev/null; then
     eval "$(starship init zsh)"
