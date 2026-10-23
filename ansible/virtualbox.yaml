@@ -9,9 +9,6 @@
           - VirtualBox
           - akmod-VirtualBox
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: add user to vboxusers group (for USB passthrough)
       ansible.builtin.user:

@@ -19,9 +19,6 @@
       ansible.builtin.dnf5:
         name: google-chrome-stable
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: add Megasync repository
       ansible.builtin.yum_repository:
@@ -39,9 +36,6 @@
       ansible.builtin.dnf5:
         name: megasync
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: add Slack repository
       ansible.builtin.yum_repository:
@@ -58,18 +52,12 @@
       ansible.builtin.dnf5:
         name: slack
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: install Zoom
       ansible.builtin.dnf5:
         name: https://cdn.zoom.us/prod/6.7.5.6891/zoom_x86_64.rpm
         state: present
         disable_gpg_check: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: check if keyd is installed
       ansible.builtin.stat:
@@ -110,9 +98,6 @@
         name: ffmpeg
         state: present
         allowerasing: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: check if cliphist is installed
       ansible.builtin.stat:
@@ -144,10 +129,6 @@
         owner: root
         group: root
       become: yes
-      # Include proxy if GitHub is being blocked or throttled
-      environment:
-        http_proxy: http://127.0.0.1:20172
-        https_proxy: http://127.0.0.1:20172
 
     - name: check if Starship is installed
       ansible.builtin.stat:
@@ -253,9 +234,6 @@
       ansible.builtin.dnf5:
         name: brave-browser
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: add Pritunl repository
       ansible.builtin.yum_repository:
@@ -273,9 +251,6 @@
       ansible.builtin.dnf5:
         name: pritunl-client-electron
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: add flathub remote
       community.general.flatpak_remote:
@@ -349,9 +324,6 @@
         url: https://api.github.com/repos/ikatson/rqbit/releases/latest
         return_content: true
       register: github_rqbit
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: download and install rqbit CLI binary
       ansible.builtin.get_url:
@@ -361,18 +333,12 @@
         owner: root
         group: root
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: import Beekeeper Studio GPG key
       ansible.builtin.rpm_key:
         state: present
         key: https://rpm.beekeeperstudio.io/beekeeper.key
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: add Beekeeper Studio repo
       ansible.builtin.get_url:
@@ -380,9 +346,6 @@
         dest: /etc/yum.repos.d/beekeeper-studio.repo
         mode: "0644"
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: install Beekeeper Studio
       ansible.builtin.dnf5:
@@ -394,9 +357,6 @@
         name: beekeeper-studio
         state: present
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: add Microsoft RedHat repository
       ansible.builtin.yum_repository:
@@ -409,9 +369,6 @@
         state: present
         exclude: "moby* docker* containernetworking-plugins"
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: install MS SQL CLI tools (sqlcmd)
       ansible.builtin.dnf5:
@@ -419,6 +376,4 @@
         state: present
       become: yes
       environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
         ACCEPT_EULA: "Y"

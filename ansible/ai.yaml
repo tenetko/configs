@@ -20,6 +20,3 @@
       ansible.builtin.dnf5:
         name: "{{ tools }}"
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888

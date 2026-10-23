@@ -17,25 +17,16 @@
       ansible.builtin.dnf5:
         name: "{{ sway }}"
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: enable hyprlock COPR repository
       community.general.copr:
         name: lionheartp/Hyprland
         state: enabled
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: install hyprlock
       ansible.builtin.dnf5:
         name: hyprlock
         state: present
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     # - name: cron job for wallpaper
     #   ansible.builtin.cron:

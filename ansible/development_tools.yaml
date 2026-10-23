@@ -45,9 +45,6 @@
           - docker-compose
         state: present
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: add the user to the docker group
       ansible.builtin.user:
@@ -71,9 +68,6 @@
         owner: root
         group: root
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: create wrapper script for MySQL (bypass MariaDB warning)
       ansible.builtin.copy:
@@ -111,15 +105,9 @@
         gpgkey: https://downloads.claude.ai/keys/claude-code.asc
         state: present
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
 
     - name: install Claude Code
       ansible.builtin.dnf5:
         name: claude-code
         state: present
       become: yes
-      environment:
-        http_proxy: http://127.0.0.1:8888
-        https_proxy: http://127.0.0.1:8888
