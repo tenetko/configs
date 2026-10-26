@@ -151,6 +151,7 @@
       - tree
       - unrar
       - unzip
+      - uv
       - vifm
       - vim-enhanced # just in case neovim configuration breaks
       - vimiv-qt # image viewer similar to qimgv
