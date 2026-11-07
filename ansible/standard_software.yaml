@@ -145,6 +145,7 @@
       - qrencode
       - ripgrep
       - rsync
+      - skopeo
       - sshpass
       - telnet
       - traceroute
