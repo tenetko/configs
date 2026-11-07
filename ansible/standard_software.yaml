@@ -158,6 +158,7 @@
       - vimiv-qt # image viewer similar to qimgv
       - wl-clipboard
       - wdisplays
+      - yq
       - zsh
       - zsh-autosuggestions
       - zsh-syntax-highlighting
