@@ -127,6 +127,7 @@
       - imv
       - iotop
       - jq
+      - kcat
       - keychain
       - kitty
       - kubernetes
