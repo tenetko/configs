@@ -121,15 +121,6 @@
             group: root
       when: not cliphist.stat.exists
 
-    - name: install tremc
-      ansible.builtin.get_url:
-        url: https://github.com/tremc/tremc/raw/refs/heads/master/tremc
-        dest: /usr/local/bin/tremc
-        mode: "0755"
-        owner: root
-        group: root
-      become: yes
-
     - name: check if Starship is installed
       ansible.builtin.stat:
         path: /usr/local/bin/starship
@@ -319,21 +310,6 @@
         - kube_contexts.rc == 0
         - "'kubernetes-admin@kubernetes' in kube_contexts.stdout_lines"
 
-    - name: get latest rqbit release information from github
-      ansible.builtin.uri:
-        url: https://api.github.com/repos/ikatson/rqbit/releases/latest
-        return_content: true
-      register: github_rqbit
-
-    - name: download and install rqbit CLI binary
-      ansible.builtin.get_url:
-        url: "{{ github_rqbit.json.assets | selectattr('name', 'search', '^rqbit-linux-(amd64|x86_64)$') | map(attribute='browser_download_url') | first }}"
-        dest: /usr/local/bin/rqbit
-        mode: "0755"
-        owner: root
-        group: root
-      become: yes
-
     - name: import Beekeeper Studio GPG key
       ansible.builtin.rpm_key:
         state: present
@@ -377,3 +353,9 @@
       become: yes
       environment:
         ACCEPT_EULA: "Y"
+
+    - name: install Stig on a uv-managed Python
+      ansible.builtin.command:
+        cmd: "uv tool install --python 3.14 stig"
+        creates: "{{ ansible_facts['env']['HOME'] }}/.local/share/uv/tools/stig"
+      become: false
