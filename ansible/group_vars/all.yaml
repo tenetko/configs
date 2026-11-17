@@ -43,3 +43,7 @@ go_tools:
 
 golangci_lint_version: "2.14.0"
 golangci_lint_sha256: "ab90aeb7b066f92a33415b638a50fe5344bbb75a0d32ad30cc248d88f81032ab"
+
+home_zone: home
+home_interfaces:
+  - enp3s0
