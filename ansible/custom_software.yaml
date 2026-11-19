@@ -343,7 +343,9 @@
         gpgcheck: yes
         enabled: yes
         state: present
-        exclude: "moby* docker* containernetworking-plugins"
+        includepkgs:
+          - msodbcsql18
+          - mssql-tools18
       become: yes
 
     - name: install MS SQL CLI tools (sqlcmd)
@@ -433,3 +435,9 @@
       changed_when: false
       failed_when: public_ports.rc == 0
       become: true
+
+    - name: install Anydesk
+      community.general.flatpak:
+        name: com.anydesk.Anydesk
+        remote: flathub
+        state: present
