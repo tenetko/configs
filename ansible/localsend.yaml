@@ -1,0 +1,79 @@
+---
+- name: install Localsend
+  hosts: new_installation
+  become: yes
+
+  tasks:
+    - name: install Localsend
+      community.general.flatpak:
+        name: org.localsend.localsend_app
+        remote: flathub
+        state: present
+
+    - name: find connections on home interfaces
+      ansible.builtin.command:
+        cmd: nmcli -g GENERAL.CONNECTION device show {{ item }}
+      register: home_iface_conns
+      changed_when: false
+      loop: "{{ home_interfaces | intersect(ansible_facts['interfaces']) }}"
+
+    - name: read current firewall zone of those connections
+      ansible.builtin.command:
+        cmd: nmcli -g connection.zone connection show "{{ item.stdout }}"
+      register: home_conn_zones
+      changed_when: false
+      loop: "{{ home_iface_conns.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+      when: item.stdout | length > 0
+
+    - name: assign home connections to the {{ home_zone }} zone
+      ansible.builtin.command:
+        cmd: nmcli connection modify "{{ item.item.stdout }}" connection.zone {{ home_zone }}
+      loop: "{{ home_conn_zones.results }}"
+      loop_control:
+        label: "{{ item.item.item | default('skipped') }}"
+      when: item is not skipped and item.stdout != home_zone
+      register: zone_changed
+      become: true
+
+    - name: apply zone changes to active devices without reconnecting
+      ansible.builtin.command:
+        cmd: nmcli device reapply {{ item.item.item.item }}
+      loop: "{{ zone_changed.results }}"
+      loop_control:
+        label: "{{ item.item.item.item | default('skipped') }}"
+      when: item is changed
+      become: true
+
+    - name: allow LocalSend in the {{ home_zone }} zone
+      ansible.posix.firewalld:
+        zone: "{{ home_zone }}"
+        port: "{{ item }}"
+        permanent: true
+        immediate: true
+        state: enabled
+      loop:
+        - 53317/tcp
+        - 53317/udp
+      become: true
+
+    - name: verify LocalSend ports are open in the {{ home_zone }} zone
+      ansible.builtin.command:
+        cmd: firewall-cmd --zone={{ home_zone }} --query-port={{ item }}
+      loop:
+        - 53317/tcp
+        - 53317/udp
+      changed_when: false
+      become: true
+
+    - name: verify LocalSend ports are closed in public
+      ansible.builtin.command:
+        cmd: firewall-cmd --zone=public --query-port={{ item }}
+      loop:
+        - 53317/tcp
+        - 53317/udp
+      register: public_ports
+      changed_when: false
+      failed_when: public_ports.rc == 0
+      become: true

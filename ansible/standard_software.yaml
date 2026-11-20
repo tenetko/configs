@@ -51,6 +51,7 @@
       - cronie
       - cups
       - direnv
+      - dnf-plugins-core
       - flatpak
       - freetds # for pyodbc
       - gcc
@@ -99,6 +100,7 @@
       - xdg-desktop-portal
       - xdg-desktop-portal-gtk
       - xdg-desktop-portal-wlr
+      - yum-utils
       - zoxide
 
     tools:

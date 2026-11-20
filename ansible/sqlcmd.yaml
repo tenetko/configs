@@ -1,0 +1,61 @@
+---
+- name: install go-sqlcmd
+  hosts: new_installation
+
+  tasks:
+    - name: create {{ go_sqlcmd_root }}/go-sqlcmd-{{ go_sqlcmd_version }}
+      ansible.builtin.file:
+        path: "{{ go_sqlcmd_root }}/go-sqlcmd-{{ go_sqlcmd_version }}"
+        state: directory
+        mode: "0755"
+
+    - name: download go-sqlcmd {{ go_sqlcmd_version }}
+      ansible.builtin.get_url:
+        url: |
+          https://github.com/microsoft/go-sqlcmd/releases/download/v{{ go_sqlcmd_version }}/sqlcmd-linux-amd64.tar.bz2
+        dest: "/tmp/sqlcmd-{{ go_sqlcmd_version }}-linux-amd64.tar.bz2"
+        checksum: "sha256:{{ go_sqlcmd_sha256 }}"
+        mode: "0644"
+
+    - name: unpack go-sqlcmd {{ go_sqlcmd_version }}
+      ansible.builtin.unarchive:
+        src: "/tmp/sqlcmd-{{ go_sqlcmd_version }}-linux-amd64.tar.bz2"
+        dest: "{{ go_sqlcmd_root }}/go-sqlcmd-{{ go_sqlcmd_version }}"
+        remote_src: true
+        creates: "{{ go_sqlcmd_root }}/go-sqlcmd-{{ go_sqlcmd_version }}/sqlcmd"
+
+    - name: verify go-sqlcmd binary is present
+      ansible.builtin.stat:
+        path: "{{ go_sqlcmd_root }}/go-sqlcmd-{{ go_sqlcmd_version }}/sqlcmd"
+      register: go_sqlcmd_bin
+
+    - name: fail if go-sqlcmd did not unpack
+      ansible.builtin.assert:
+        that: go_sqlcmd_bin.stat.exists
+        fail_msg: >-
+          go-sqlcmd {{ go_sqlcmd_version }} was not unpacked —
+          check go_sqlcmd_sha256 and the release asset name.
+
+    - name: link go-sqlcmd into {{ go_bin_dir }}
+      ansible.builtin.file:
+        src: "{{ go_sqlcmd_root }}/go-sqlcmd-{{ go_sqlcmd_version }}/sqlcmd"
+        dest: "{{ go_bin_dir }}/sqlcmd"
+        state: link
+        force: true
+
+    - name: find superseded go-sqlcmd builds
+      ansible.builtin.find:
+        paths: "{{ go_sqlcmd_root }}"
+        patterns: "go-sqlcmd-*"
+        file_type: directory
+        excludes: "go-sqlcmd-{{ go_sqlcmd_version }}"
+        depth: 1
+      register: stale_go_cmd
+
+    - name: remove superseded go-sqlcmd builds
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ stale_go_cmd.files }}"
+      loop_control:
+        label: "{{ item.path }}"

@@ -47,3 +47,12 @@ golangci_lint_sha256: "ab90aeb7b066f92a33415b638a50fe5344bbb75a0d32ad30cc248d88f
 home_zone: home
 home_interfaces:
   - enp3s0
+
+go_sqlcmd_version: "1.11.0"
+go_sqlcmd_sha256: "2e41111d2e00782d50b9f8887bf603890af1e85e308708703e4ce27dc3c410e7"
+go_sqlcmd_root: "{{ ansible_facts['env']['HOME'] }}/.local/share/go-sqlcmd"
+
+
+usql_version: "0.21.6"
+usql_sha256: "b3046140f8f2add0e2afaaa595b824d445e933d400a00d50a1c038760d4ce13c"
+usql_root: "{{ ansible_facts['env']['HOME'] }}/.local/share/usql"

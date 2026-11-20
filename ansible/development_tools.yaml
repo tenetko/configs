@@ -111,3 +111,49 @@
         name: claude-code
         state: present
       become: yes
+
+    - name: import the tenv repository signing key
+      ansible.builtin.rpm_key:
+        key: https://dl.cloudsmith.io/public/tofuutils/tenv/gpg.8ACD4386ADD982F6.key
+        state: present
+      become: yes
+
+    - name: add the tenv repository
+      ansible.builtin.yum_repository:
+        name: tofuutils-tenv
+        description: tofuutils-tenv
+        baseurl: https://dl.cloudsmith.io/public/tofuutils/tenv/rpm/fedora/$releasever/$basearch
+        gpgkey: https://dl.cloudsmith.io/public/tofuutils/tenv/gpg.8ACD4386ADD982F6.key
+        gpgcheck: true
+        repo_gpgcheck: true
+        enabled: true
+        # No sslcacert: dnf uses the system trust store
+      become: yes
+
+    - name: install tenv
+      ansible.builtin.package:
+        name: tenv
+        state: present
+      become: yes
+
+    - name: install the latest Terraform with tenv
+      ansible.builtin.command:
+        cmd: "tenv tf install latest"
+      register: terraform_install
+      changed_when: "'already installed' not in (terraform_install.stdout + terraform_install.stderr)"
+
+    - name: set the default Terraform version
+      ansible.builtin.command:
+        cmd: "tenv tf use latest"
+      changed_when: false
+
+    - name: install Terragrunt with tenv
+      ansible.builtin.command:
+        cmd: "tenv tg install latest"
+      register: terragrunt_install
+      changed_when: "'already installed' not in (terragrunt_install.stdout + terragrunt_install.stderr)"
+
+    - name: set the default Terragrunt version
+      ansible.builtin.command:
+        cmd: "tenv tg use latest"
+      changed_when: false

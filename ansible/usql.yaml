@@ -1,0 +1,61 @@
+---
+- name: install usql
+  hosts: new_installation
+
+  tasks:
+    - name: create {{ usql_root }}/usql-{{ usql_version }}
+      ansible.builtin.file:
+        path: "{{ usql_root }}/usql-{{ usql_version }}"
+        state: directory
+        mode: "0755"
+
+    - name: download usql {{ usql_version }}
+      ansible.builtin.get_url:
+        url: |
+          https://github.com/xo/usql/releases/download/v{{ usql_version }}/usql-{{ usql_version }}-linux-amd64.tar.bz2
+        dest: "/tmp/usql-{{ usql_version }}-linux-amd64.tar.bz2"
+        checksum: "sha256:{{ usql_sha256 }}"
+        mode: "0644"
+
+    - name: unpack usql {{ usql_version }}
+      ansible.builtin.unarchive:
+        src: "/tmp/usql-{{ usql_version }}-linux-amd64.tar.bz2"
+        dest: "{{ usql_root }}/usql-{{ usql_version }}"
+        remote_src: true
+        creates: "{{ usql_root }}/usql-{{ usql_version}}/usql"
+
+    - name: verify usql binary is present
+      ansible.builtin.stat:
+        path: "{{ usql_root }}/usql-{{ usql_version }}/usql"
+      register: usql_bin
+
+    - name: fail if usql did not unpack
+      ansible.builtin.assert:
+        that: usql_bin.stat.exists
+        fail_msg: >-
+          usql {{ usql_version }} was not unpacked —
+          check usql_sha256 and the release asset name.
+
+    - name: link usql into {{ go_bin_dir }}
+      ansible.builtin.file:
+        src: "{{ usql_root }}/usql-{{ usql_version }}/usql"
+        dest: "{{ go_bin_dir }}/usql"
+        state: link
+        force: true
+
+    - name: find superseded usql builds
+      ansible.builtin.find:
+        paths: "{{ usql_root }}"
+        patterns: "usql-*"
+        file_type: directory
+        excludes: "usql-{{ usql_version }}"
+        depth: 1
+      register: stale_usql
+
+    - name: remove superseded usql builds
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ stale_usql.files }}"
+      loop_control:
+        label: "{{ item.path }}"

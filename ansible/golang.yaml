@@ -1,5 +1,5 @@
 ---
-- name: Go toolchain and development tools
+- name: install Go toolchain and development tools
   hosts: new_installation
 
   vars:
@@ -16,7 +16,6 @@
         state: absent
         autoremove: true
       become: true
-      environment: "{{ proxy_env }}"
 
     - name: download Go {{ go_version }} tarball
       ansible.builtin.get_url:
@@ -24,7 +23,6 @@
         dest: "/tmp/{{ go_tarball }}"
         checksum: "sha256:{{ go_sha256 }}"
         mode: "0644"
-      environment: "{{ proxy_env }}"
 
     - name: create versioned Go directory
       ansible.builtin.file:
@@ -69,7 +67,7 @@
       ansible.builtin.command:
         cmd: "{{ go_exe }} install {{ item.module }}@{{ item.version }}"
         creates: "{{ go_tools_prefix }}/{{ item.name }}-{{ item.version }}/{{ item.name }}"
-      environment: "{{ proxy_env | combine({
+      environment: "{{ combine({
         'GOBIN': go_tools_prefix ~ '/' ~ item.name ~ '-' ~ item.version,
         'GOTOOLCHAIN': 'local',
         'PATH': go_root ~ '/bin:' ~ ansible_facts['env']['PATH'],
@@ -117,7 +115,6 @@
         dest: "/tmp/golangci-lint-{{ golangci_lint_version }}.tar.gz"
         checksum: "sha256:{{ golangci_lint_sha256 }}"
         mode: "0644"
-      environment: "{{ proxy_env }}"
 
     - name: unpack golangci-lint {{ golangci_lint_version }}
       ansible.builtin.unarchive:
