@@ -19,6 +19,7 @@ export KEYTIMEOUT=1
 # -- Completion
 zstyle :compinstall filename "$HOME/.zshrc"
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+fpath+=~/.zfunc
 autoload -Uz compinit
 compinit
 
@@ -94,7 +95,6 @@ fi
 # -- Paths
 [ -d "/usr/local/go/bin" ] && export PATH="/usr/local/go/bin:$PATH"
 [ -d "$HOME/.local/bin" ] && export PATH="$HOME/.local/bin:$PATH"
-[ -d "/opt/mssql-tools18/bin" ] && export PATH="$PATH:/opt/mssql-tools18/bin"
 
 # -- Envman
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
@@ -106,3 +106,4 @@ fi
 
 # -- Keychain for SSH keys
 eval $(keychain --eval --quiet id_ed25519)
+
